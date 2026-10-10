@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Warm Ivory Backgrounds */
+  --color-canvas: #FBF8F3;
+  --color-canvas-subtle: #F5EFE6;
+  --color-canvas-muted: #EAE2D5;
+
+  /* Surfaces & Cards */
+  --color-surface: #FFFFFF;
+  --color-surface-raised: #FCFBF9;
+  --color-surface-border: #E8DFD1;
+
+  /* Deep Editorial Blue */
+  --color-brand-primary: #0C1E32;
+  --color-brand-primary-hover: #153354;
+
+  /* Coral Orange */
+  --color-brand-accent: #E85D42;
+  --color-brand-accent-hover: #CF4B32;
+
+  /* Typography */
+  --color-text-main: #141920;
+  --color-text-muted: #5A6675;
+
+  --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-heading: "Iowan Old Style", "Apple Garamond", "Baskerville", "Times New Roman", "Droid Serif", Times, "Source Serif Pro", serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+}
+
+body {
+  background-color: var(--color-canvas);
+  color: var(--color-text-main);
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom Scrollbar for professional data tables */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-canvas-subtle);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-canvas-muted);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #C4B9A9;
+}

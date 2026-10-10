@@ -1,0 +1,627 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum GlobalRole {
+  PLATFORM_ADMIN
+  USER
+}
+
+enum CompanyRole {
+  COMPANY_ADMIN
+  MANAGER
+  EMPLOYEE
+}
+
+enum CompanyStatus {
+  ACTIVE
+  SUSPENDED
+  ONBOARDING
+}
+
+enum MembershipStatus {
+  ACTIVE
+  PENDING
+  INVITED
+  DEACTIVATED
+}
+
+enum OnboardingStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum TaskType {
+  DAILY_TASK
+  TRAINING_ACTIVITY
+  RECURRING_TASK
+  TEMPLATE
+  HISTORICAL_RECORD
+}
+
+enum TaskPriority {
+  LOW
+  MEDIUM
+  HIGH
+  URGENT
+}
+
+enum AssignmentStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  SUBMITTED
+  UNDER_REVIEW
+  CHANGES_REQUESTED
+  COMPLETED
+}
+
+enum ReviewDecision {
+  APPROVED
+  CHANGES_REQUESTED
+  FEEDBACK_ONLY
+}
+
+enum MeetingType {
+  TRAINING_SESSION
+  TEAM_MEETING
+  ONE_ON_ONE
+  HELP_SESSION
+}
+
+enum MeetingStatus {
+  SCHEDULED
+  RESCHEDULED
+  COMPLETED
+  CANCELLED
+}
+
+enum AttendanceStatus {
+  INVITED
+  ACCEPTED
+  DECLINED
+  ATTENDED
+  ABSENT
+}
+
+enum DoubtStatus {
+  OPEN
+  SCHEDULED
+  RESOLVED
+}
+
+model User {
+  id          String              @id @default(cuid())
+  clerkId     String              @unique
+  email       String              @unique
+  firstName   String?
+  lastName    String?
+  imageUrl    String?
+  globalRole  GlobalRole          @default(USER)
+  memberships CompanyMembership[]
+  auditLogs   AuditLog[]          @relation("ActorAuditLogs")
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
+
+  @@index([clerkId])
+  @@index([email])
+}
+
+model Company {
+  id              String              @id @default(cuid())
+  name            String
+  slug            String              @unique
+  domain          String?
+  logoUrl         String?
+  status          CompanyStatus       @default(ACTIVE)
+  memberships     CompanyMembership[]
+  departments     Department[]
+  trainingBatches TrainingBatch[]
+  tasks                 Task[]
+  meetings              Meeting[]
+  employeeDoubts        EmployeeDoubt[]
+  worksheets            Worksheet[]
+  assessmentAssignments AssessmentAssignment[]
+  forumThreads          ForumThread[]
+  auditLogs             AuditLog[]
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime            @updatedAt
+
+  @@index([slug])
+}
+
+model CompanyMembership {
+  id                    String               @id @default(cuid())
+  userId                String
+  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId             String
+  company               Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  role                  CompanyRole          @default(EMPLOYEE)
+  status                MembershipStatus     @default(ACTIVE)
+  employeeProfile       EmployeeProfile?
+  managedProfiles       EmployeeProfile[]    @relation("ManagerReports")
+  createdTasks          Task[]               @relation("CreatedTasks")
+  assignedTasks         TaskAssignment[]     @relation("AssignedTasks")
+  taskAssignmentsMade   TaskAssignment[]     @relation("TaskAssignmentsMade")
+  reviewsGiven          TaskReview[]         @relation("ReviewsGiven")
+  organizedMeetings     Meeting[]            @relation("OrganizedMeetings")
+  meetingParticipations MeetingParticipant[] @relation("MeetingParticipations")
+  submittedDoubts       EmployeeDoubt[]      @relation("SubmittedDoubts")
+  createdWorksheets     Worksheet[]          @relation("CreatedWorksheets")
+  assignedWorksheets    AssessmentAssignment[] @relation("AssignedWorksheets")
+  worksheetAssignmentsMade AssessmentAssignment[] @relation("WorksheetAssignmentsMade")
+  evaluationsGiven      AssessmentEvaluation[] @relation("EvaluationsGiven")
+  authoredForumThreads  ForumThread[]        @relation("ForumThreadAuthor")
+  resolvedForumThreads  ForumThread[]        @relation("ForumThreadResolvedBy")
+  forumReplies          ForumReply[]         @relation("ForumReplyAuthor")
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  @@unique([userId, companyId])
+  @@index([userId])
+  @@index([companyId])
+  @@index([role])
+}
+
+model Department {
+  id          String            @id @default(cuid())
+  companyId   String
+  company     Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  code        String?
+  employees   EmployeeProfile[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+model EmployeeProfile {
+  id                    String             @id @default(cuid())
+  membershipId          String             @unique
+  membership            CompanyMembership  @relation(fields: [membershipId], references: [id], onDelete: Cascade)
+  departmentId          String?
+  department            Department?        @relation(fields: [departmentId], references: [id], onDelete: SetNull)
+  batchId               String?
+  batch                 TrainingBatch?     @relation(fields: [batchId], references: [id], onDelete: SetNull)
+  jobTitle              String?
+  startDate             DateTime?
+  managerMembershipId   String?
+  manager               CompanyMembership? @relation("ManagerReports", fields: [managerMembershipId], references: [id], onDelete: SetNull)
+  phoneNumber           String?
+  location              String?
+  bio                   String?
+  onboardingStatus      OnboardingStatus   @default(NOT_STARTED)
+  onboardingCompletedAt DateTime?
+  createdAt             DateTime           @default(now())
+  updatedAt             DateTime           @updatedAt
+
+  @@index([membershipId])
+  @@index([departmentId])
+  @@index([batchId])
+  @@index([managerMembershipId])
+}
+
+model TrainingBatch {
+  id          String            @id @default(cuid())
+  companyId   String
+  company     Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  name        String
+  code        String?
+  startDate   DateTime?
+  endDate     DateTime?
+  description String?
+  employees   EmployeeProfile[]
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  @@unique([companyId, name])
+  @@index([companyId])
+}
+
+model Task {
+  id                  String           @id @default(cuid())
+  companyId           String
+  company             Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creatorMembershipId String?
+  creator             CompanyMembership? @relation("CreatedTasks", fields: [creatorMembershipId], references: [id], onDelete: SetNull)
+  title               String
+  description         String?
+  instructions        String?
+  type                TaskType         @default(TRAINING_ACTIVITY)
+  priority            TaskPriority     @default(MEDIUM)
+  startDate           DateTime?
+  dueDate             DateTime?
+  resourceLinks       Json?
+  attachments         Json?
+  isArchived          Boolean          @default(false)
+  isTemplate          Boolean          @default(false)
+  isHistorical        Boolean          @default(false)
+  assignments         TaskAssignment[]
+  forumThreads        ForumThread[]
+  createdAt           DateTime         @default(now())
+  updatedAt           DateTime         @updatedAt
+
+  @@index([companyId])
+  @@index([type])
+  @@index([isArchived])
+  @@index([isHistorical])
+}
+
+model TaskAssignment {
+  id                     String           @id @default(cuid())
+  taskId                 String
+  task                   Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  employeeMembershipId   String
+  employeeMembership     CompanyMembership @relation("AssignedTasks", fields: [employeeMembershipId], references: [id], onDelete: Cascade)
+  assignedByMembershipId String?
+  assignedBy             CompanyMembership? @relation("TaskAssignmentsMade", fields: [assignedByMembershipId], references: [id], onDelete: SetNull)
+  status                 AssignmentStatus @default(NOT_STARTED)
+  dueDate                DateTime?
+  completedAt            DateTime?
+  submissions            TaskSubmission[]
+  reviews                TaskReview[]
+  createdAt              DateTime         @default(now())
+  updatedAt              DateTime         @updatedAt
+
+  @@unique([taskId, employeeMembershipId])
+  @@index([employeeMembershipId])
+  @@index([taskId])
+  @@index([status])
+}
+
+model TaskSubmission {
+  id               String         @id @default(cuid())
+  assignmentId     String
+  assignment       TaskAssignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  submissionNumber Int            @default(1)
+  submissionText   String?
+  links            Json?
+  attachments      Json?
+  submittedAt      DateTime       @default(now())
+  reviews          TaskReview[]
+
+  @@index([assignmentId])
+}
+
+model TaskReview {
+  id                   String          @id @default(cuid())
+  assignmentId         String
+  assignment           TaskAssignment  @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  submissionId         String?
+  submission           TaskSubmission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  reviewerMembershipId String
+  reviewer             CompanyMembership @relation("ReviewsGiven", fields: [reviewerMembershipId], references: [id], onDelete: Cascade)
+  decision             ReviewDecision
+  feedback             String
+  reviewedAt           DateTime        @default(now())
+
+  @@index([assignmentId])
+  @@index([reviewerMembershipId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  companyId  String?
+  company    Company? @relation(fields: [companyId], references: [id], onDelete: SetNull)
+  actorId    String?
+  actor      User?    @relation("ActorAuditLogs", fields: [actorId], references: [id], onDelete: SetNull)
+  action     String
+  entityType String
+  entityId   String?
+  metadata   Json?
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  @@index([companyId])
+  @@index([actorId])
+  @@index([action])
+  @@index([createdAt])
+}
+
+model Meeting {
+  id                    String               @id @default(cuid())
+  companyId             String
+  company               Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  organizerMembershipId String
+  organizer             CompanyMembership    @relation("OrganizedMeetings", fields: [organizerMembershipId], references: [id], onDelete: Cascade)
+  title                 String
+  description           String?
+  agenda                String?
+  type                  MeetingType          @default(TRAINING_SESSION)
+  status                MeetingStatus        @default(SCHEDULED)
+  startTime             DateTime
+  endTime               DateTime
+  meetingUrl            String?
+  location              String?
+  meetingNotes          String?
+  actionItems           Json?
+  cancellationReason    String?
+  sourceDoubtId         String?              @unique
+  sourceDoubt           EmployeeDoubt?       @relation(fields: [sourceDoubtId], references: [id], onDelete: SetNull)
+  participants          MeetingParticipant[]
+  forumThreads          ForumThread[]
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  @@index([companyId])
+  @@index([organizerMembershipId])
+  @@index([startTime])
+  @@index([status])
+}
+
+model MeetingParticipant {
+  id               String            @id @default(cuid())
+  meetingId        String
+  meeting          Meeting           @relation(fields: [meetingId], references: [id], onDelete: Cascade)
+  membershipId     String
+  membership       CompanyMembership @relation("MeetingParticipations", fields: [membershipId], references: [id], onDelete: Cascade)
+  attendanceStatus AttendanceStatus  @default(INVITED)
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+
+  @@unique([meetingId, membershipId])
+  @@index([meetingId])
+  @@index([membershipId])
+}
+
+model EmployeeDoubt {
+  id                  String            @id @default(cuid())
+  companyId           String
+  company             Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  studentMembershipId String
+  student             CompanyMembership @relation("SubmittedDoubts", fields: [studentMembershipId], references: [id], onDelete: Cascade)
+  topic               String
+  question            String
+  status              DoubtStatus       @default(OPEN)
+  meeting             Meeting?
+  resolvedAt          DateTime?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@index([companyId])
+  @@index([studentMembershipId])
+  @@index([status])
+}
+
+// ==========================================
+// Phase 5: Worksheets, Assignments & Evaluations
+// ==========================================
+
+enum QuestionType {
+  MCQ
+  SHORT_ANSWER
+  LONG_ANSWER
+  FILE_UPLOAD
+}
+
+enum AssessmentStatus {
+  PENDING
+  IN_PROGRESS
+  SUBMITTED
+  EVALUATED
+  RESUBMISSION_REQUESTED
+}
+
+enum AssessmentSubmissionStatus {
+  DRAFT
+  SUBMITTED
+}
+
+enum EvaluationStatus {
+  DRAFT
+  RELEASED
+}
+
+model Worksheet {
+  id                  String                 @id @default(cuid())
+  companyId           String
+  company             Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creatorMembershipId String
+  creator             CompanyMembership      @relation("CreatedWorksheets", fields: [creatorMembershipId], references: [id], onDelete: Cascade)
+  title               String
+  description         String?
+  instructions        String?
+  resources           String?
+  maxMarks            Float                  @default(100)
+  passMarks           Float                  @default(50)
+  allowResubmission   Boolean                @default(false)
+  version             Int                    @default(1)
+  isPublished         Boolean                @default(true)
+  questions           Question[]
+  assignments         AssessmentAssignment[]
+  forumThreads        ForumThread[]
+  createdAt           DateTime               @default(now())
+  updatedAt           DateTime               @updatedAt
+
+  @@index([companyId])
+  @@index([creatorMembershipId])
+}
+
+model Question {
+  id            String             @id @default(cuid())
+  worksheetId   String
+  worksheet     Worksheet          @relation(fields: [worksheetId], references: [id], onDelete: Cascade)
+  type          QuestionType
+  questionText  String
+  options       Json?              // For MCQ: ["Option A", "Option B", ...]
+  correctOption String?            // For MCQ auto-grading. NEVER exposed to employees before release!
+  maxMarks      Float              @default(5)
+  order         Int                @default(0)
+  rubric        String?            // Evaluation criteria description
+  answers       AssessmentAnswer[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([worksheetId])
+  @@index([order])
+}
+
+model AssessmentAssignment {
+  id                     String                 @id @default(cuid())
+  companyId              String
+  company                Company                @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  worksheetId            String
+  worksheet              Worksheet              @relation(fields: [worksheetId], references: [id], onDelete: Cascade)
+  employeeMembershipId   String
+  employee               CompanyMembership      @relation("AssignedWorksheets", fields: [employeeMembershipId], references: [id], onDelete: Cascade)
+  assignedByMembershipId String
+  assignedBy             CompanyMembership      @relation("WorksheetAssignmentsMade", fields: [assignedByMembershipId], references: [id], onDelete: Cascade)
+  dueDate                DateTime?
+  status                 AssessmentStatus       @default(PENDING)
+  allowResubmission      Boolean                @default(false)
+  submissions            AssessmentSubmission[]
+  createdAt              DateTime               @default(now())
+  updatedAt              DateTime               @updatedAt
+
+  @@unique([worksheetId, employeeMembershipId])
+  @@index([companyId])
+  @@index([employeeMembershipId])
+  @@index([assignedByMembershipId])
+  @@index([status])
+}
+
+model AssessmentSubmission {
+  id            String                     @id @default(cuid())
+  assignmentId  String
+  assignment    AssessmentAssignment       @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  attemptNumber Int                        @default(1)
+  status        AssessmentSubmissionStatus @default(DRAFT)
+  submittedAt   DateTime?
+  employeeNotes String?
+  answers       AssessmentAnswer[]
+  evaluation    AssessmentEvaluation?
+  createdAt     DateTime                   @default(now())
+  updatedAt     DateTime                   @updatedAt
+
+  @@unique([assignmentId, attemptNumber])
+  @@index([assignmentId])
+  @@index([status])
+}
+
+model AssessmentAnswer {
+  id             String               @id @default(cuid())
+  submissionId   String
+  submission     AssessmentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  questionId     String
+  question       Question             @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  textAnswer     String?
+  selectedOption String?
+  fileUrl        String?
+  marksAwarded   Float?
+  autoGraded     Boolean              @default(false)
+  feedback       String?
+  createdAt      DateTime             @default(now())
+  updatedAt      DateTime             @updatedAt
+
+  @@unique([submissionId, questionId])
+  @@index([submissionId])
+  @@index([questionId])
+}
+
+model AssessmentEvaluation {
+  id                    String               @id @default(cuid())
+  submissionId          String               @unique
+  submission            AssessmentSubmission @relation(fields: [submissionId], references: [id], onDelete: Cascade)
+  evaluatorMembershipId String
+  evaluator             CompanyMembership    @relation("EvaluationsGiven", fields: [evaluatorMembershipId], references: [id], onDelete: Cascade)
+  totalMarksAwarded     Float
+  maxMarks              Float
+  status                EvaluationStatus     @default(DRAFT)
+  feedback              String?
+  rubricsFeedback       Json?
+  evaluatedAt           DateTime             @default(now())
+  releasedAt            DateTime?
+  createdAt             DateTime             @default(now())
+  updatedAt             DateTime             @updatedAt
+
+  @@index([evaluatorMembershipId])
+  @@index([status])
+}
+
+// ==========================================
+// Phase 6: Discussion Forum & Doubt Resolution
+// ==========================================
+
+enum ForumCategory {
+  GENERAL
+  TECHNICAL
+  ONBOARDING
+  TASK_QUERY
+  WORKSHEET_QUERY
+  POLICY
+}
+
+enum ForumThreadStatus {
+  OPEN
+  ANSWERED
+  RESOLVED
+}
+
+model ForumThread {
+  id                     String             @id @default(cuid())
+  companyId              String
+  company                Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  authorMembershipId     String
+  author                 CompanyMembership  @relation("ForumThreadAuthor", fields: [authorMembershipId], references: [id], onDelete: Cascade)
+  title                  String
+  content                String
+  category               ForumCategory      @default(GENERAL)
+  status                 ForumThreadStatus  @default(OPEN)
+  attachments            Json?              // Array of { name: string, url: string }
+  taskId                 String?
+  task                   Task?              @relation(fields: [taskId], references: [id], onDelete: SetNull)
+  worksheetId            String?
+  worksheet              Worksheet?         @relation(fields: [worksheetId], references: [id], onDelete: SetNull)
+  meetingId              String?
+  meeting                Meeting?           @relation(fields: [meetingId], references: [id], onDelete: SetNull)
+  isReported             Boolean            @default(false)
+  reportReason           String?
+  isModerated            Boolean            @default(false)
+  resolvedAt             DateTime?
+  resolvedByMembershipId String?
+  resolvedBy             CompanyMembership? @relation("ForumThreadResolvedBy", fields: [resolvedByMembershipId], references: [id], onDelete: SetNull)
+  acceptedReplyId        String?            @unique
+  acceptedReply          ForumReply?        @relation("AcceptedAnswer", fields: [acceptedReplyId], references: [id], onDelete: SetNull)
+  replies                ForumReply[]       @relation("ThreadReplies")
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
+
+  @@index([companyId])
+  @@index([authorMembershipId])
+  @@index([status])
+  @@index([category])
+  @@index([taskId])
+  @@index([worksheetId])
+}
+
+model ForumReply {
+  id                 String             @id @default(cuid())
+  threadId           String
+  thread             ForumThread        @relation("ThreadReplies", fields: [threadId], references: [id], onDelete: Cascade)
+  authorMembershipId String
+  author             CompanyMembership  @relation("ForumReplyAuthor", fields: [authorMembershipId], references: [id], onDelete: Cascade)
+  content            String
+  attachments        Json?
+  isAcceptedAnswer   Boolean            @default(false)
+  isReported         Boolean            @default(false)
+  reportReason       String?
+  isModerated        Boolean            @default(false)
+  acceptedForThread  ForumThread?       @relation("AcceptedAnswer")
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([threadId])
+  @@index([authorMembershipId])
+}
+
+
