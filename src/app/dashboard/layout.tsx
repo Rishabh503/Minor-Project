@@ -22,6 +22,7 @@ export default async function DashboardLayout({
         company={context.company}
         role={context.membership?.role}
         isPlatformAdmin={context.isPlatformAdmin}
+        isTestSession={context.isTestSession}
       />
 
       <div className="flex flex-1">

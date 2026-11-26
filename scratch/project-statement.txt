@@ -1,0 +1,254 @@
+Tab 1
+1. TITLE OF THE PROJECT
+
+Role-Based Smart Employee Onboarding and Work Simulation Platform.
+
+2. PROBLEM STATEMENT
+
+Employee onboarding processes vary significantly across organizations and teams and are often dependent
+on informal communication, scattered documents, meetings, and manual task allocation. New employees
+may spend their initial days going through policies and training material without getting sufficient exposure
+to the type of work they will actually perform in their roles.
+
+Another challenge is that new employees may hesitate to ask questions during the initial onboarding period
+due to the fear of asking something they consider basic or insignificant. As a result, managers may not have a
+clear understanding of the common areas of confusion among new employees.
+
+The proposed project aims to address these issues by providing a structured, role-based onboarding platform
+where companies can define onboarding roadmaps, provide role-specific historical work tasks, organize
+meetings and courses, and monitor trainee progress. The platform will also provide an anonymous doubt
+forum and an AI-based assistant using company-provided policies, FAQs, and resources to support trainees
+throughout the onboarding process.
+
+3. WHY IS THE PARTICULAR TOPIC CHOSEN?
+
+The topic was chosen because employee onboarding is an important process that directly affects how quickly
+new employees understand their responsibilities, organizational practices, and team workflows. However,
+onboarding is often handled differently across companies and even across different teams within the same
+organization.
+
+A major gap identified is that onboarding generally focuses on sharing information rather than allowing
+trainees to practice the type of work they will perform. Providing sanitized historical tasks and role-specific
+work simulations can allow trainees to gain practical exposure in a safe environment before working on
+actual company tasks.
+
+The project also focuses on the communication gap between trainees and managers. An anonymous doubt
+forum can encourage trainees to raise questions more comfortably, while AI-based analysis can identify
+common areas of confusion and present summarized insights to managers. A company-specific AI assistant
+can further provide immediate answers based on available organizational policies, FAQs, and onboarding
+resources.
+
+Therefore, the topic provides an opportunity to combine structured onboarding, practical work simulation,
+progress monitoring, and AI-assisted support into a single platform.
+4. OBJECTIVE AND SCOPE OF THE PROJECT
+
+4.1. Objectives
+
+    1.​ To develop a centralized platform for organizing and standardizing the employee onboarding
+         process.
+
+    2.​ To allow companies to define role-specific onboarding plans containing meetings, courses, policies,
+         and practical tasks.
+
+    3.​ To provide role-based historical work simulations that allow trainees to practice realistic tasks before
+         working in the actual company environment.
+
+    4.​ To provide managers with tools to create onboarding schedules and monitor the progress and
+         performance of trainees.
+
+    5.​ To develop an anonymous doubt forum where trainees can raise questions and interact with other
+         trainees without revealing their identities.
+
+    6.​ To analyze and categorize trainee questions using AI to identify common areas of confusion and
+         provide summarized insights to managers.
+
+    7.​ To provide an AI-based onboarding assistant that can answer trainee queries using
+         company-provided policies, FAQs, documentation, and historical problem information.
+
+    8.​ To provide progress and performance insights that help managers identify areas where trainees may
+         require additional guidance.
+
+4.2. Scope
+
+The proposed system will initially demonstrate the onboarding process for three different role categories:
+Human Resources, Software Development, and Issue Handling/Analytics. The system will provide a
+common onboarding framework while allowing role-specific tasks, resources, and learning requirements.
+
+The company or administrator will be able to upload policies and security documents, define roles, add
+historical tasks, and configure onboarding roadmaps based on the duration and requirements of the program.
+Managers will be able to create and modify schedules containing meetings, courses, and tasks, while trainees
+will access these activities through a personalized onboarding dashboard.
+
+The system will include a role-based task simulation module, anonymous doubt discussion, AI-based
+categorization of common trainee concerns, and a company-specific AI assistant. The initial implementation
+will focus on a prototype environment and will not include direct integration with production HR systems or
+automatic provisioning of access to real company tools.
+5. METHODOLOGY
+
+The project will follow a modular software development approach in which the onboarding process is
+divided into company management, role-based task management, scheduling, trainee activities, and
+AI-assisted support.
+
+5.1 Proposed Methodology
+
+    1.​ Requirement Analysis​
+           Identify the onboarding requirements of companies, managers, and trainees and define common
+         features applicable to different roles.
+
+    2.​ Role and Content Configuration​
+           Companies will define roles, upload policies/FAQs, and add role-specific historical work tasks,
+         courses, and other onboarding resources.
+
+    3.​ Onboarding Roadmap Creation​
+           The system will generate a structured onboarding roadmap based on the selected duration and
+         activities. Managers can customize the schedule of meetings, courses, and tasks.
+
+    4.​ Trainee Onboarding​
+           Trainees will access a personalized dashboard and calendar containing their assigned meetings,
+         courses, documents, and role-based work simulations.
+
+    5.​ Work Simulation and Evaluation​
+          Historical work scenarios will be presented as simulated tasks. Trainees will submit their solutions,
+         which will be evaluated using predefined criteria and, where appropriate, AI-assisted analysis.
+
+    6.​ Anonymous Doubt Management​
+           Trainees can post questions anonymously and interact with other trainees through reactions and
+         discussions. AI will categorize recurring questions and generate summarized insights for managers.
+
+    7.​ AI Onboarding Assistant​
+          A Retrieval-Augmented Generation (RAG) system will use company-provided policies, FAQs, and
+         onboarding resources to answer trainee queries and provide contextual guidance.
+
+    8.​ Progress and Manager Insights​
+          The system will track completion and task performance and provide managers with trainee progress,
+         common areas of difficulty, and onboarding insights.
+
+    9.​ Testing and Validation​
+            The system will be tested using the selected HR, Software Development, and Issue
+
+         Handling/Analytics roles to validate functionality, usability, and the accuracy of AI-assisted features.
+
+5.2. Overall Flow
+6. HARDWARE, SOFTWARE, TECHNOLOGY STACK USED
+
+6.1 Hardware Requirements
+
+    ●​ Laptop/Desktop
+    ●​ Minimum 8 GB RAM
+    ●​ Internet connection
+    ●​ Cloud server/storage for deployment (if required)
+
+6.2. Software Requirements
+
+    ●​ Operating System: Windows/Linux
+    ●​ Code Editor: VS Code
+    ●​ Browser: Chrome/Edge
+    ●​ API Testing: Postman
+    ●​ Version Control: Git & GitHub
+
+6.3 Technology Stack
+
+Component            Technology
+Frontend             React.js
+Backend              Python, FastAPI
+Database             PostgreSQL
+Authentication       JWT / Role-Based Access Control
+AI / LLM             Google Gemini API
+RAG                  Embeddings + PostgreSQL with pgvector
+Document Processing  PyMuPDF(flitz) or Unstructured.io and
+                     pdfplumber
+API Communication    REST and WebSockets
+Version Control      Git & GitHub
+Deployment           Cloud-based deployment
+
+7. WHAT CONTRIBUTION WOULD THE PROJECT MAKE TOWARDS
+THE SOCIETY
+
+The project aims to improve the transition of individuals into new workplaces by providing a structured and
+accessible onboarding environment. It enables employees to understand their roles through practical work
+simulations, learning resources, and continuous guidance. The anonymous doubt forum encourages trainees
+to ask questions without hesitation, while AI-based analysis helps organizations identify common areas of
+confusion and improve their onboarding process. The system can therefore support skill development,
+workplace preparedness, inclusive communication, and more efficient organizational practices.
+8. THE SCHEDULE OF THE PROJECT (Gantt chart/ PERT chart)
+
+                   Activity          W1 W2 W3 W4 W5 W6 W7 W8 W9
+Requirement Analysis                 ✓
+
+System Design & Database             ✓
+
+UI/UX Design                         ✓ ✓
+
+Backend Development                     ✓ ✓
+
+Frontend Development                      ✓ ✓
+
+Role-Based Task & Scheduling Module          ✓ ✓
+
+AI Chatbot & Doubt Analysis                  ✓ ✓ ✓
+
+Integration & Testing                             ✓ ✓
+
+Deployment & Final Improvements                           ✓ ✓
+
+Documentation & Presentation                              ✓
+
+Overall Development Flow:
+9. IMPLEMENTATION
+10. REFERENCES/ BIBLIOGRAPHY
+
+    1.​ FastAPI Documentation — FastAPI​
+          https://fastapi.tiangolo.com/
+
+    2.​ React Documentation — Meta Open Source​
+          https://react.dev/
+
+    3.​ PostgreSQL Documentation — PostgreSQL Global Development Group​
+          https://www.postgresql.org/docs/
+
+    4.​ Gemini API Documentation — Google​
+          https://ai.google.dev/gemini-api/docs
+
+    5.​ pgvector: Open-source vector similarity search for PostgreSQL — pgvector​
+          https://github.com/pgvector/pgvector
+
+    6.​ PyMuPDF Documentation — PyMuPDF​
+          https://pymupdf.readthedocs.io/
+
+    7.​ Unstructured Documentation — Unstructured​
+          https://docs.unstructured.io/
+
+    8.​ pdfplumber Documentation — pdfplumber​
+          https://github.com/jsvine/pdfplumber
+
+    9.​ OWASP Top 10: 2025 — OWASP Foundation​
+          https://owasp.org/www-project-top-ten/
+
+    10.​ Artificial Intelligence Risk Management Framework (AI RMF 1.0) — NIST, 2023​
+          https://www.nist.gov/publications/artificial-intelligence-risk-management-framework-ai-rmf-10
+
+    11.​ Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks — Lewis, P. et al., 2020​
+          https://arxiv.org/abs/2005.11401
+Smart Trainee Onboarding System Features:
+
+    ●​ Company policies and documents- company uploads
+    ●​ Manager schedules onboarding plan for n days
+    ●​ Assign courses
+    ●​ Historic tasks practise
+    ●​ Doubt forum
+    ●​ Chatbot for questions and doubts
+
+Company-
+    ●​ Documents
+    ●​ Historic tasks load
+    ●​ Defines roles
+    ●​ General roadmap
+
+Manager-
+    ●​ Create onboarding schedule
+    ●​ Answer doubts
+    ●​ See overall scoring of trainees insights
+
+Trainee-
+    ●​ Go according to schedule- meetings, tasks, courses
+

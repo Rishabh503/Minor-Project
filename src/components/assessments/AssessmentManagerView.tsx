@@ -14,6 +14,7 @@ import {
   createWorksheetAction,
   assignWorksheetAction,
   evaluateAssessmentAction,
+  suggestAssessmentGradesAction,
   requestResubmissionAction,
 } from "@/app/dashboard/assessments/actions";
 import { formatDateTime } from "@/lib/utils";
@@ -33,6 +34,7 @@ import {
   ChevronRight,
   ShieldCheck,
   RotateCcw,
+  Sparkles,
 } from "lucide-react";
 
 export interface QuestionData {
@@ -176,6 +178,7 @@ export function AssessmentManagerView({
   const [overallFeedback, setOverallFeedback] = useState("");
   const [evaluateError, setEvaluateError] = useState("");
   const [evaluateLoading, setEvaluateLoading] = useState(false);
+  const [aiSuggesting, setAiSuggesting] = useState(false);
 
   // Resubmission Request State
   const [resubmissionReason, setResubmissionReason] = useState("");
@@ -339,6 +342,23 @@ export function AssessmentManagerView({
       setEvaluatingSubmission(null);
       router.refresh();
     }
+  };
+
+  const handleAiGradeSuggestion = async () => {
+    if (!evaluatingSubmission) return;
+    setEvaluateError("");
+    setAiSuggesting(true);
+    const result = await suggestAssessmentGradesAction(evaluatingSubmission.id);
+    setAiSuggesting(false);
+    if ("error" in result) return setEvaluateError(result.error || "Could not generate grading suggestions.");
+    setGradesMap((current) => {
+      const next = { ...current };
+      result.grades.forEach((grade) => {
+        next[grade.questionId] = { marks: grade.marksAwarded, feedback: grade.feedback };
+      });
+      return next;
+    });
+    if (result.overallFeedback) setOverallFeedback(result.overallFeedback);
   };
 
   // Request resubmission
@@ -1077,6 +1097,12 @@ export function AssessmentManagerView({
 
             {/* Questions Grading Breakdown */}
             <div className="space-y-6">
+              <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-editorial-200 bg-editorial-50 p-3">
+                <p className="text-xs text-editorial-800">AI can draft suggestions for written answers. Review and edit all marks before saving or releasing.</p>
+                <Button type="button" variant="outline" size="sm" onClick={handleAiGradeSuggestion} disabled={aiSuggesting} className="gap-2">
+                  <Sparkles className="h-4 w-4" />{aiSuggesting ? "Generating…" : "Suggest written-answer grades"}
+                </Button>
+              </div>
               {evaluatingSubmission.assignment.worksheet.questions.map((q, idx) => {
                 const answer = evaluatingSubmission.answers.find((a) => a.questionId === q.id);
                 const currentGrade = gradesMap[q.id] || { marks: 0, feedback: "" };

@@ -1,0 +1,2349 @@
+URBAN ENERGY CONSUMPTION, EMISSIONS & DEMAND
+                 FORECASTING SYSTEM (VoltAtlas)
+
+                                                      A
+
+                             MINOR PROJECT REPORT
+
+                                                       Submitted by
+
+                                  Akshit Saraswat (01614812723)
+                               Chhatraj Vashishtha (03514812723)
+
+                                        Harshit (04314812723)
+
+                                  BACHELOR OF TECHNOLOGY
+                                                     IN
+
+                        COMPUTER SCIENCE AND TECHNOLOGY
+
+                                                   Under the Guidance
+                                                              of
+
+                                     Mr. Priyank Kumar Saxena
+                                         (Asst. Professor CST)
+
+                        Department of Computer Science and Technology
+                             Maharaja Agrasen Institute of Technology,
+
+                       PSP area, Sector – 22, Rohini, New Delhi – 110085
+           (Affiliated to Guru Gobind Singh Indraprastha University, New Delhi)
+
+                                                DEC 2026
+MAHARAJA AGRASEN INSTITUTE OF TECHNOLOGY
+        Department of Computer Science and Technology
+
+                                  CERTIFICATE
+
+   This is to certify that this MINOR project report “URBAN ENERGY CONSUMPTION,
+ EMISSIONS & DEMAND FORECASTING SYSTEM (VoltAtlas)” is submitted by “Akshit
+Saraswat (01614812723), Chhatraj Vashishtha (03514812723), Harshit (04314812723)” who
+
+                        carried out the project work under my/our supervision.
+I/We approve this MINOR project for submission.
+
+Prof. (Dr.) Pooja Gupta     Mr. Priyank Kumar Saxena
+(Professor & HOD, CST)            (Asst. Professor CST)
+                                          (Project Guide)
+
+                         2
+                                    ABSTRACT
+
+The increasing demand for electricity in urban areas has created a need for efficient energy monitoring, demand
+forecasting, and environmental impact assessment. Variations in electricity consumption due to weather
+conditions, seasonal changes, and time-based usage patterns can lead to periods of high demand and place
+additional pressure on electricity infrastructure. At the same time, electricity generation contributes to carbon
+emissions depending on the energy sources used. The Urban Energy Consumption, Emissions & Demand
+Forecasting System aims to address these challenges through an integrated, data-driven approach to urban
+energy analysis and planning.
+The proposed system combines historical electricity consumption data, weather information, and time -based
+features to identify consumption patterns, analyze peak-demand periods, and estimate associated carbon
+emissions using suitable emission factors. Machine learning techniques, particularly the XGBoost regression
+algorithm, are used to forecast electricity demand for the next 24 hours. The forecasting model is intended to be
+evaluated using Mean Absolute Error, Root Mean Squared Error, and the coefficient of determination (R²). The
+system also incorporates a web-based dashboard developed using React.js, supported by a FastAPI backend and
+MongoDB database, to present consumption trends, emissions estimates, demand forecasts, and potenti al high-
+demand alerts.
+The project aims to make energy-related information easier to interpret and support informed decision-making
+for urban energy management. By integrating data analytics, machine learning, and web technologies, the
+system provides a foundation for understanding electricity usage and its environmental implications. It aligns
+with Sustainable Development Goals 7, 11, and 13, relating to affordable and clean energy, sustainable cities
+and communities, and climate action. The proposed system is intended to serve as an analytical and decision-
+support platform that can be extended in the future through real-time data integration, renewable energy
+analysis, and advanced energy optimization techniques.
+
+                                                                         3
+                           ACKNOWLEDGEMENT
+
+It gives me immense pleasure to express my deepest sense of gratitude and sincere thanks to my respected guide
+Mr. Priyank Kumar Saxena (Asst. Professor) Department of Computer Science and Technology, MAIT Delhi,
+for their valuable guidance, encouragement and help for completing this work. Their useful suggestions for this
+whole work and co-operative behaviour are sincerely acknowledged.
+I also wish to express my indebtedness to my parents as well as my family member whose blessings and support
+always helped me to face the challenges ahead.
+
+Place: Delhi         Akshit Saraswat (01614812723)
+Date:            Chhatraj Vashishtha (03514812723)
+
+                                Harshit (04314812723)
+
+              4
+        TABLE OF CONTENTS
+
+S. NO.  CONTENTS                                             PAGE NO.
+        Certificate                                                2
+1.1     Abstract                                                   3
+1.2     Acknowledgment                                             4
+1.3     Table of Contents                                          5
+1.4     List of Tables                                             7
+1.5     List of Figures                                            8
+1.6     List of Symbols, Abbreviations and Nomenclature            9
+        CHAPTER 1: INTRODUCTION                                    11
+2.1     Background                                                 11
+2.2     Problem Statement                                          11
+2.3     Motivation                                                 12
+2.4     Objectives of the Project                                  13
+2.5     Scope of the Project                                       13
+2.6     Significance of the Project                                14
+        CHAPTER 2: LITERATURE SURVEY                               17
+3.1     Introduction to Urban Energy Management                    17
+3.2     Existing Energy Monitoring Systems                         17
+3.3     Electricity Demand Forecasting Techniques                  18
+3.4     Carbon Emissions Analysis Approaches                       19
+3.5     Review of Related Research                                 20
+3.6     Research Gap                                               22
+3.7     CHAPTER 3: RESEARCH METHODOLOGY AND SYSTEM ANALYSIS        23
+        Proposed Methodology                                       23
+        Dataset Description and Data Sources                       24
+        System Requirements                                        25
+        Feasibility Analysis                                       26
+        System Architecture                                        27
+        System Workflow                                            28
+        Functional and Non-Functional Requirements                 29
+
+        5
+     CHAPTER 4: SYSTEM DESIGN AND IMPLEMENTATION            32
+
+4.1  Introduction                                           32
+
+4.2  Technology Stack                                       33
+
+4.3  System Architecture                                    33
+
+4.4  Dataset Generation and Database Initialization         34
+
+4.5  Data Processing and Feature Preparation                36
+
+4.6  Electricity Consumption and Carbon Emissions Analysis  38
+
+4.7  Demand Forecasting Using XGBoost                       41
+
+4.8  Backend Development Using FastAPI                      44
+
+4.9  Frontend Dashboard Implementation                      46
+
+4.10 Alerts, Insights, and Configuration                    49
+
+4.11 System Integration                                     50
+
+4.12 Limitations of Implementation                          51
+
+4.13 Chapter summary                                        52
+
+     CHAPTER 5: RESULTS AND DISCUSSION                      53
+
+5.1  Experimental Setup                                     53
+
+5.2  Electricity Consumption Analysis Results               54
+
+5.3  Carbon Emissions Analysis Results                      55
+
+5.4  Electricity Demand Forecasting Results                 56
+
+5.5  Model Evaluation Using MAE, RMSE and R²                57
+
+5.6  Dashboard Outputs and Visualizations                   58
+
+5.7  System Testing                                         60
+
+5.8  Discussion of Results                                  61
+
+     CHAPTER 6: CONCLUSION, SUMMARY AND FUTURE SCOPE        63
+
+6.1  Project Summary                                        63
+
+6.2  Conclusion                                             63
+
+6.3  Limitations                                            64
+
+6.4  Future Scope                                           65
+
+6.5  Contribution Towards Sustainable Development Goals     66
+
+     CHAPTER 7: REFERENCES                                  68
+
+     Appendices                                             69
+
+     Proof of Research Paper Publishing
+
+                                               6
+                 LIST OF TABLES
+
+TABLE NO. TITLE                                       PAGE NO.
+                                                           24
+3.1  Dataset Characteristics                               25
+                                                           26
+3.2  Hardware Requirements                                 28
+                                                           29
+3.3  Software Requirements                                 30
+                                                           33
+3.4  Major System Components                               38
+                                                           45
+3.5  Functional Requirements                               53
+                                                           60
+3.6  Non-Functional Requirements
+
+4.1  Technologies Used in the Project
+
+4.2  Illustrative Emission Factors Used by VoltAtlas
+
+4.3  Important API Endpoints
+
+5.1  Experimental Setup of VoltAtlas
+
+5.3  System Testing Checklist
+
+                                       7
+                         LIST OF FIGURES
+
+FIGURE NO. TITLE                                 PAGE NO.
+                                                       15
+1.1  SDG alignment of project                          19
+                                                       34
+2.1  Load forecasting process                          51
+                                                       54
+4.1  Logical Architecture of VoltAtlas                 55
+                                                       56
+4.2  End-to-End Execution Workflow of VoltAtlas        58
+                                                       59
+5.1  Energy Analytics Dashboard                        60
+
+5.2  Carbon Intelligence Dashboard
+
+5.3  Demand Forecast Dashboard
+
+5.4  Overview Dashboard
+
+5.8  Grid Zones Dashboard
+
+5.9  Alerts and Insights Dashboard
+
+                                        8
+    LIST OF SYMBOLS, ABBREVIATIONS AND NOMENCLATURE
+
+SYMBOL / ABBREVIATION DESCRIPTION
+
+AI       Artificial Intelligence
+
+API      Application Programming Interface
+
+CO₂e     Carbon Dioxide Equivalent
+CSV      Comma-Separated Values
+
+CSS      Cascading Style Sheets
+
+DB       Database
+HTML     HyperText Markup Language
+
+HTTP     Hypertext Transfer Protocol
+
+JSON     JavaScript Object Notation
+JS       JavaScript
+
+MAE      Mean Absolute Error
+
+ML       Machine Learning
+
+MW       Megawatt
+
+MWh      Megawatt-hour
+
+REST     Representational State Transfer
+RMSE     Root Mean Squared Error
+
+R²       Coefficient of Determination
+
+SQL      Structured Query Language
+SQLite   Lightweight Relational Database
+
+XGBoost  Extreme Gradient Boosting
+
+E        Electricity energy consumed
+
+EF       Carbon emission factor
+
+                                   9
+y_i  Actual observed value
+
+yi   Predicted value
+
+n    Number of observations
+
+P    Electrical power demand
+
+                      10
+                           CHAPTER 1 – INTRODUCTION
+
+1.1 background
+
+Electricity is one of the most essential resources for modern urban development. Residential buildings,
+commercial establishments, industries, transportation systems, and public infrastructure depend on a continuous
+and reliable supply of electrical energy. With the growth of urban populations and increasing dependence on
+electrical appliances and digital infrastructure, the demand for electricity has become more dynamic and difficult
+to manage.
+
+Electricity consumption varies according to several factors, including the time of day, seasonal changes, weather
+conditions, and the activities of consumers. For example, during periods of high temperature, the use of air
+conditioners, coolers, and other cooling appliances may increase electricity demand significantly. Such
+variations can create peak-demand periods and place additional pressure on electricity distribution
+infrastructure.
+
+Along with energy consumption, its environmental impact is another important consideration. The generation
+of electricity may produce carbon emissions depending on the energy sources used, such as coal, natural gas,
+solar, and wind. Therefore, understanding electricity consumption without examining its associated emissions
+provides only a partial view of the overall energy situation.
+Data analytics and machine learning provide opportunities to study historical consumption patterns, identify
+periods of high demand, estimate electricity-related carbon emissions, and predict future electricity
+requirements. By combining these capabilities within a single system, energy-related information can be
+presented in a structured and understandable manner.
+
+The Urban Energy Consumption, Emissions & Demand Forecasting System is proposed as a data -driven
+platform that integrates electricity consumption analysis, carbon-emissions estimation, and electricity-demand
+forecasting. It uses historical energy data, weather information, and time-based features to generate meaningful
+insights. The system also incorporates a web-based dashboard to present analytical results, forecasts, and
+potential high-demand alerts, supporting more informed and sustainable urban energy management.
+
+1.2 Problem Statement
+
+Urban electricity consumption fluctuates considerably due to variations in weather conditions, seasonal
+requirements, time-based usage patterns, and consumer demand. During periods of increased electricity usage,
+these fluctuations may place additional stress on energy infrastructure and make efficient energy management
+more challenging.
+
+                                                                         11
+Electricity consumption is also associated with environmental impacts because the generation of electrical
+energy may produce carbon emissions depending on the composition of the energy sources used. However,
+consumption analysis, demand forecasting, and emissions estimation are often treated as separate activities.
+This makes it difficult to obtain a unified understanding of energy usage, its environmental impact, and the
+possibility of future demand increases.
+
+The absence of an integrated analytical approach can limit the ability to identify high-consumption periods,
+understand the relationship between electricity demand and weather conditions, and estimate the associated
+carbon footprint. It also creates a need for better tools to anticipate future demand and identify situations in
+which consumption may exceed predefined reference thresholds.
+
+Therefore, the problem addressed by this project is the development of an integrated, data-driven system that
+can analyze historical urban electricity consumption, estimate related carbon emissions, forecast electricity
+demand for the next 24 hours, and generate alerts for potential high-demand situations. The system aims to
+present these insights through an interactive web dashboard to support energy monitoring, planning, and
+sustainable decision-making.
+
+1.3 Motivation
+
+The motivation behind this project is the growing need for efficient electricity management and environmental
+sustainability in urban areas. Increasing energy requirements, changing weather conditions, and concerns
+regarding carbon emissions make it important to understand not only how much electricity is consumed but also
+when demand increases and what environmental impact is associated with that consumption.
+
+One of the primary motivations is to identify electricity consumption patterns using historical data. Analyzing
+hourly usage, seasonal variations, temperature, and previous demand values can help reveal the factors
+associated with increased electricity requirements. Such insights can improve understanding of peak-demand
+periods and support better planning.
+
+Another motivation is the need to estimate the carbon emissions associated with electricity consumption. Since
+electricity generation sources have different emission characteristics, combining consumption data with suitable
+emission factors can provide a clearer picture of the environmental impact of energy usage.
+
+The project also provides an opportunity to apply concepts from computer science and technology to a practical
+infrastructure-related problem. It combines data preprocessing, exploratory data analysis, machine learning,
+database management, backend development, frontend development, and data visualization within a single
+application.
+
+The use of the XGBoost regression algorithm for electricity-demand forecasting is intended to identify
+relationships between historical demand, weather conditions, and time-based features. Furthermore, the
+
+                                                                         12
+integration of React.js, FastAPI, and MongoDB provides a framework for presenting the results through a
+unified web application.
+Thus, the project is motivated by the opportunity to combine machine learning, full -stack development, and
+sustainability-oriented data analytics to address an important urban energy management challenge.
+
+1.4 Objectives of the Project
+
+The main objective of the Urban Energy Consumption, Emissions & Demand Forecasting System is to develop
+an integrated analytical platform for understanding urban electricity consumption, estimating associated carbon
+emissions, and forecasting future electricity demand.
+The specific objectives are as follows:
+1. To analyze electricity consumption patterns: Study historical electricity usage to identify daily trends,
+seasonal variations, peak-demand periods, and changes in consumption over time.
+2. To estimate carbon emissions: Calculate electricity-related carbon emissions using appropriate emission
+factors and consumption values to understand the environmental impact of energy usage.
+3. To forecast electricity demand: Develop a machine learning-based forecasting model using the XGBoost
+regression algorithm to predict electricity demand for the next 24 hours using historical consumption, weather,
+and time-based features.
+4. To develop an interactive dashboard: Build a web-based interface that presents energy consumption trends,
+emissions estimates, demand forecasts, and other relevant insights through charts and visualizations.
+5. To identify potential high-demand situations: Compare forecasted demand with predefined reference or
+threshold values and generate suitable alerts when demand is expected to exceed those values.
+6. To integrate the system components: Combine data processing, machine learning, database operations,
+backend services, and frontend visualization into a unified application.
+7. To support sustainable energy management: Provide data-driven insights that can help users understand
+energy usage, assess environmental impact, and make more informed decisions regarding urban electricity
+planning.
+
+1.5 Scope of the Project
+
+The scope of the project is to develop a data-driven software system for analyzing urban electricity consumption,
+estimating related carbon emissions, and forecasting future electricity demand. The system focuses on the use
+
+                                                                         13
+of historical electricity data, weather information, and time-based features to study consumption patterns and
+generate useful analytical insights.
+The first major component focuses on electricity consumption analysis. It involves collecting and preprocessing
+suitable datasets, handling missing or inconsistent values, and analyzing variations in demand across different
+time periods. The analysis is intended to identify peak-demand periods, daily and seasonal trends, and possible
+relationships between electricity usage and environmental conditions.
+The second component focuses on carbon-emissions estimation. It uses electricity consumption values and
+suitable emission factors to estimate the emissions associated with energy usage. The resulting estimates can be
+presented through visualizations to help users understand the environmental implications of electricity
+consumption.
+The third component involves machine learning-based demand forecasting. The project uses XGBoost
+regression to generate a primary forecast for the next 24 hours. Relevant input features include historical demand
+values, time-related variables, temperature, and other available weather information. Forecasting performance
+is evaluated using Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and the coefficient of
+determination (R²).
+The fourth component involves the development of a web-based application. The frontend is developed using
+React.js and Tailwind CSS, while FastAPI provides backend services and MongoDB is used for data storage.
+Recharts is used for data visualization, and Axios supports communication between the frontend and backend
+through APIs.
+The system also includes the proposed functionality to identify potential high-demand situations by comparing
+forecasted demand with predefined thresholds. These alerts are intended to provide early indications of possible
+demand-related concerns.
+The project is limited to data analysis, demand forecasting, visualization, and decision support using the
+available datasets. Direct control of physical electricity infrastructure, guaranteed prediction of blackouts, and
+real-time intervention in the electricity grid are outside its scope. The reliability of the analytical results depends
+on the quality, completeness, and suitability of the available data.
+
+1.6 Significance of the Project
+
+The significance of the project lies in its integrated approach to electricity consumption analysis, carbon -
+emissions estimation, and demand forecasting. By combining these functions, the system aims to provide a
+broader understanding of urban energy usage than a platform that monitors consumption alone.
+
+                                                                         14
+From an energy management perspective, the analysis of historical consumption can help identify periods of
+increased electricity demand and recurring usage patterns. Forecasting future demand can provide an additional
+source of information for anticipating potential high-demand situations and supporting better planning.
+From an environmental perspective, the estimation of electricity-related carbon emissions can improve
+awareness of the relationship between energy consumption and its environmental impact. Presenting emissions
+information alongside consumption data allows users to consider both energy requirements and sustainability-
+related factors.
+From a technological perspective, the project demonstrates the practical application of machine learning and
+full-stack web development. It brings together Python-based data analysis, XGBoost regression, FastAPI
+backend services, MongoDB data storage, and React.js-based visualization in a single application.
+The project also has academic significance because it applies concepts from data science, machine learning,
+database management, software engineering, and web development to a real -world problem. It provides a
+foundation for future extensions involving real-time data integration, renewable-energy analysis, and advanced
+energy optimization.
+The project is also aligned with the following United Nations Sustainable Development Goals (SDGs):
+
+    • SDG 7 – Affordable and Clean Energy: By supporting electricity consumption analysis, demand
+         forecasting, and energy-efficiency awareness.
+
+    • SDG 11 – Sustainable Cities and Communities: By providing analytical insights relevant to urban energy
+         planning and infrastructure management.
+
+    • SDG 13 – Climate Action: By estimating electricity-related carbon emissions and improving awareness
+         of the environmental impact of energy usage.
+
+                                           Figure 1.1 SDG Alignment of project
+
+                                                                         15
+Overall, the proposed system aims to serve as an analytical and decision-support platform that combines energy
+monitoring, environmental assessment, and predictive analysis to support more informed and sustainable urban
+energy management.
+
+                                                                         16
+                       CHAPTER 2 - LITERATURE SURVEY
+
+2.1 Introduction to Urban Energy Management
+
+Urban energy management has become an important area of research due to increasing electricity consumption,
+changing weather conditions, and the need to improve energy efficiency in cities. Residential buildings,
+commercial establishments, industries, and public infrastructure contribute to electricity demand, which varies
+according to time, season, temperature, and consumer activities. Understanding these variations is essential for
+identifying peak-demand periods and supporting effective energy planning.
+Traditional energy monitoring approaches primarily focus on recording and displaying electricity consumption.
+However, consumption data alone may not provide sufficient information about future demand or the
+environmental impact associated with electricity generation. An integrated approach that combines energy
+analytics, carbon-emissions estimation, and demand forecasting can provide a more comprehensive
+understanding of urban electricity usage.
+Recent developments in data analytics and machine learning have created opportunities to process historical
+energy data, identify consumption patterns, and predict future electricity requirements. Weather information and
+time-based variables can be incorporated into forecasting models to improve their ability to represent changes
+in electricity demand. Similarly, emission factors can be used to estimate the carbon emissions associated with
+electricity consumption.
+The Urban Energy Consumption, Emissions & Demand Forecasting System follows this integrated approach
+by combining electricity consumption analysis, emissions estimation, and machine learning-based demand
+forecasting within a web-based application. This chapter reviews the major approaches related to these
+components and identifies the research gap addressed by the proposed system.
+
+2.2 Existing Energy Monitoring Systems
+
+Energy monitoring systems are designed to collect, process, and present information about electricity usage.
+Such systems may use smart meters, historical consumption records, or other energy-monitoring data sources
+to provide insights into consumption patterns.
+Basic monitoring systems generally present electricity usage through numerical summaries, tables, and
+graphical representations. These features help users understand consumption levels over different periods and
+identify intervals in which electricity usage is relatively high. More advanced systems may provide time-based
+comparisons, consumption breakdowns, and visualizations to support energy-management decisions.
+
+                                                                         17
+Smart-meter-based monitoring provides more detailed consumption information than occasional manual
+readings. Timestamped readings can be used to study hourly, daily, and seasonal changes in electricity usage.
+When such information is organized by geographical zones or consumer categories, it can also support
+comparisons between different parts of an urban area.
+However, monitoring historical consumption does not automatically provide a reliable forecast of future
+demand. Similarly, a system that only displays electricity usage may not estimate the associated carbon
+emissions. These limitations create an opportunity to combine historical monitoring with predictive analytics
+and environmental assessment.
+The proposed project extends the concept of energy monitoring by bringing consumption analysis, emissions
+estimation, and electricity-demand forecasting together in a unified dashboard.
+
+2.3 Electricity Demand Forecasting Techniques
+
+Electricity demand forecasting involves estimating future electricity requirements using historical demand
+observations and relevant influencing factors. Forecasting can support energy planning by providing an estimate
+of expected consumption and helping identify periods when demand may become unusually high.
+Several approaches can be used for electricity-demand forecasting, depending on the available data, prediction
+horizon, and complexity of consumption patterns.
+2.3.1 Statistical Forecasting Methods
+Statistical methods use historical observations to estimate future values. Time -series techniques examine
+patterns such as trends, seasonality, and relationships between observations at different time intervals.
+These methods can provide useful forecasts when historical data exhibits relatively stable and identifiable
+patterns. However, their performance may be affected when demand depends on complex interactions between
+weather, time, and other variables.
+2.3.2 Traditional Machine Learning Methods
+Traditional machine learning algorithms learn relationships between input variables and a target value from
+historical data. For electricity forecasting, input variables may include previous demand, hour of the day, day
+of the week, month, and temperature.
+Regression-based methods can model relationships between these features and electricity demand. Their
+effectiveness depends on the characteristics of the dataset, the selection of input features, and the way the model
+is trained and evaluated.
+
+                                                                         18
+2.3.3 XGBoost Regression
+XGBoost is a machine learning algorithm based on gradient-boosted decision trees. It builds an ensemble of
+trees sequentially, with later trees helping reduce errors made by the existing ensemble.
+XGBoost can model nonlinear relationships and interactions between different input variables. This makes it a
+suitable candidate for forecasting tasks in which electricity demand may depend on combinations of historical
+usage, weather conditions, and time-based characteristics.
+
+                                             Figure 2.1 Load Forecasting process
+In the proposed system, XGBoost regression is selected for electricity-demand forecasting. Features such as
+historical demand values, hour, day, month, and available weather variables can be used as model inputs. The
+intended prediction horizon is the next 24 hours.
+
+The model's performance should be evaluated using appropriate metrics, including Mean Absolute Error
+(MAE), Root Mean Squared Error (RMSE), and the coefficient of determination (R²). The actual suitability of
+the model must be established from the results obtained during implementation and testing.
+
+2.4 Carbon Emissions Analysis Approaches
+
+Carbon-emissions analysis examines the environmental impact associated with energy consumption.
+Electricity-related emissions depend on the amount of electricity consumed and the emission characteristics of
+the sources used to generate it.
+A commonly used approach is to estimate emissions by multiplying electricity consumption by an appropriate
+emission factor. The emission factor represents the estimated emissions associated with a unit of electricity and
+must be selected according to the relevant dataset, geographical context, and calculation methodology.
+
+                                                                         19
+The general calculation is:
+                            CO2e Emissions = Electricity Consumption × Emission Factor
+
+For example, when electricity consumption is measured in kilowatt-hours (kWh) and the emission factor is
+expressed in kilograms of CO₂-equivalent per kWh, the resulting estimate is expressed in kilograms of CO₂-
+equivalent.
+The accuracy of this estimate depends on the suitability of the emission factor and the quality of the consumption
+data. Where a fixed emission factor is used, the resulting emissions estimate will reflect that factor's
+assumptions. More detailed approaches may account for changes in the electricity generation mix over time.
+The project incorporates emissions estimation alongside consumption analysis so that users can examine energy
+usage and its estimated environmental impact within the same system. The exact emission factors and their
+sources should be documented in the implementation chapter according to those actually used in the project.
+
+2.5 Review of Related Research
+
+Several research studies have explored electricity-demand forecasting, smart-meter-based energy analysis, and
+the application of machine learning in power systems. These studies provide a foundation for selecting
+appropriate forecasting techniques and identifying useful input features for the proposed project.
+2.5.1 Load Forecasting Using Smart Meter Data
+Semmelmann, Henni, and Weinhardt (2022), in their research paper “Load forecasting for energy communities:
+a novel LSTM-XGBoost hybrid model based on smart meter data,” investigated day-ahead electricity-load
+forecasting using smart-meter data. The researchers proposed a hybrid model combining a bidirectional Long
+Short-Term Memory (LSTM) network with XGBoost to forecast general consumption patterns and peak loads.
+The study found that smart-meter information could improve forecasting accuracy compared with approaches
+based on standard load profiles. It also highlighted the importance of historical consumption and time -related
+features in predicting electricity demand. This research supports the use of historical energy data and machine
+learning for short-term demand forecasting.
+Springer Nature Link
+2.5.2 Short-Term Load Forecasting Under Extreme Weather Conditions
+A 2022 study published in Energy Reports, titled “Bagging–XGBoost algorithm based extreme weather
+identification and short-term load forecasting model,” examined electricity-demand forecasting during extreme
+weather conditions.
+
+                                                                         20
+The researchers combined XGBoost with a bagging approach and considered weather-related variables,
+historical load, and time-based features. The study focused on identifying periods of extreme demand and
+improving short-term load forecasting. Its findings demonstrate the relevance of incorporating weather
+conditions into forecasting systems, particularly when unusual weather may influence electricity consumption.
+
+ScienceDirect
+
+This study is relevant to the proposed project because weather variables such as temperature can influence
+electricity demand, especially when cooling requirements increase during hot periods.
+
+2.5.3 Data-Driven Carbon Emissions Estimation in Urban Areas
+
+Research on urban carbon-emissions estimation has explored the relationship between energy consumption data
+and standard emission factors. A 2025 study published in Sustainability, titled “From Energy Dependence to
+Spatial Intelligence: A Spatial Data-Based Carbon Emission Estimation Model for Urban Built-Up Area,”
+examined the estimation of carbon emissions across urban areas using energy-related data and emission factors.
+
+The study considered different urban sectors and demonstrated how energy-consumption information can be
+incorporated into emissions-estimation calculations. This approach is relevant to the proposed project because
+it establishes the importance of connecting energy usage with its estimated environmental impact.
+
+MDPI
+
+The proposed system applies the same general principle at the level supported by its available data: electricity
+consumption is combined with an appropriate emission factor to estimate associated carbon emissions.
+
+2.5.4 Summary of the Literature Survey
+
+S. Research study        Main approach                        Relevance to the proposed project
+No.
+
+1 Semmelmann et al. (2022) Hybrid LSTM-XGBoost Supports historical-data-based demand
+                                           model using smart-meter forecasting and peak-load analysis.
+                                           data
+
+2 Energy Reports (2022) Bagging-XGBoost with Supports forecasting under changing
+                                           weather and load features weather conditions and identifying peak
+                                                                               demand.
+
+3 Sustainability (2025)  Urban carbon-emissions               Supports the integration of        energy-
+                         estimation using energy              consumption analysis and           carbon-
+                         data and emission factors            emissions estimation.
+
+                                        21
+2.6 Research Gap
+
+The literature review indicates that electricity-demand forecasting and urban carbon-emissions estimation are
+important areas of energy research. Existing studies demonstrate the usefulness of machine learning algorithms
+for predicting electricity demand and the use of emission factors for estimating the environmental impact of
+energy consumption.
+
+However, the requirements of an integrated energy-analysis platform extend beyond individual forecasting or
+emissions calculations. Consumption patterns, environmental impact, future electricity requirements, and the
+presentation of results need to be considered together to provide a useful overview of urban energy usage.
+
+The following research gaps motivate the proposed project:
+
+1. Integration of analytical components: Energy-consumption analysis, carbon-emissions estimation, and
+demand forecasting may be implemented as separate functions. The proposed project aims to bring these
+components together within a single application.
+
+2. Incorporation of multiple influencing factors: Electricity demand is affected by historical usage, time -based
+patterns, and weather conditions. The project aims to combine available features to develop a more informative
+demand-forecasting model.
+
+3. Environmental impact assessment: Consumption monitoring alone does not indicate the estimated carbon
+emissions associated with electricity usage. The project incorporates emissions estimation alongside
+consumption analysis.
+
+4. Accessible presentation of results: Analytical findings are more useful when they can be interpreted easily.
+The proposed system uses an interactive web dashboard to present consumption trends, emissions estimates,
+demand forecasts, and potential high-demand alerts.
+
+5. Decision-support functionality: Forecasting future demand and comparing it with predefined thresholds can
+help identify potential high-demand situations before they occur. The project aims to provide such alerts as an
+analytical aid rather than directly controlling physical grid infrastructure.
+
+Based on these gaps, the Urban Energy Consumption, Emissions & Demand Forecasting System proposes an
+integrated approach combining data preprocessing, electricity-consumption analysis, carbon-emissions
+estimation, XGBoost-based demand forecasting, and web-based visualization. The system is intended to support
+better understanding of energy usage and provide information that may assist sustainable urban energy planning.
+
+The project does not claim to introduce a new machine learning algorithm. Its primary contribution is the
+integration of established data-analysis and forecasting techniques into a unified application focused on
+electricity consumption, environmental impact, and future demand.
+
+                                                                         22
+CHAPTER 3 - RESEARCH METHODOLOGY AND SYSTEM ANALYSIS
+
+3.1 Proposed Methodology
+
+The Urban Energy Consumption, Emissions & Demand Forecasting System, named VoltAtlas — Urban Energy
+Grid & Emissions Analyzer, follows a data-driven methodology that combines energy consumption analysis,
+carbon-emissions estimation, machine learning-based demand forecasting, and interactive data visualization.
+The system is developed as a simulated Delhi NCR case study to demonstrate how energy analytics and
+forecasting can be applied to an urban environment. It does not connect to a live electricity grid or use actual
+smart-meter readings. Instead, it generates a reproducible dataset containing 120 consecutive days of hourly
+observations across six simulated urban districts.
+The methodology consists of data generation, preprocessing, database storage, consumption analysis, emissions
+estimation, feature engineering, model training, forecasting, alert generation, and dashboard integration.
+FastAPI provides the backend services, SQLite stores the generated records and related data, and XGBoost is
+used for electricity-demand forecasting. The frontend is developed using HTML, CSS, and JavaScript.
+The major stages of the proposed methodology are described below.
+1. Data Generation: Generate hourly electricity demand and weather-related observations for six simulated
+urban districts using a fixed random seed to support reproducibility.
+2. Data Preprocessing and Storage: Organize the generated records, prepare time-based fields, and store the data
+in an indexed SQLite database for efficient retrieval.
+3. Consumption Analysis: Analyze historical electricity demand and energy consumption over selected periods
+to identify usage patterns and high-demand intervals.
+4. Carbon-Emissions Estimation: Estimate electricity-related emissions using hourly generation-mix
+assumptions and illustrative emission factors.
+5. Feature Engineering: Prepare calendar, weather, historical lag, and rolling-average features for the forecasting
+model.
+6. Demand Forecasting: Train an XGBoost regression model using a chronological training and testing split,
+and generate a recursive forecast for the next 24 hours.
+7. Model Evaluation: Evaluate one-step-ahead predictions using MAE, RMSE, and R² and compare the results
+with a lag-24 persistence baseline.
+
+                                                                         23
+8. Dashboard and API Development: Integrate the analysis and forecasting functionality through FastAPI
+endpoints and an interactive web dashboard.
+
+9. Alert Generation: Compare forecasted demand with configurable capacity thresholds to identify potential
+high-demand situations.
+
+10. Testing and Validation: Test the application's endpoints, data processing, forecasting functionality, and
+dashboard operations.
+
+This methodology provides a structured approach to integrating data analytics and machine learning into a single
+energy-analysis application.
+
+3.2 Dataset Description and Data Sources
+
+The system uses a synthetically generated dataset to simulate electricity consumption and related environmental
+conditions across an urban region. The dataset is generated locally during the application's initial startup and is
+designed to provide a consistent environment for demonstrating energy analytics and demand forecasting.
+
+The dataset contains 120 consecutive days of hourly observations distributed across six simulated urban
+districts. Each record represents a particular time interval and district, with electricity demand and relevant
+weather-related variables used for analysis and prediction.
+
+The principal data characteristics are summarized in Table 3.1.
+
+Table 3.1: Dataset Characteristics
+
+S. No. Parameter    Description
+
+1  Study area       Simulated Delhi NCR
+
+2  Data type        Synthetic hourly observations
+
+3  Observation period 120 consecutive days
+
+4  Time interval    One hour
+
+5  Urban districts  Six simulated districts
+
+6  Electricity demand Measured in MW within the simulation
+
+7  Hourly energy    Measured in MWh
+
+8  Weather variables Temperature and humidity
+
+                                             24
+9  Storage format            SQLite relational database
+
+10 Data generation Deterministic generation using a fixed seed
+
+The dataset is intended to represent possible variations in electricity consumption and weather conditions over
+time. It supports the demonstration of historical trends, demand forecasting, emissions estimation, and district-
+level comparisons.
+
+The original project proposals identify public electricity and smart-meter datasets as potential sources. However,
+the implemented version described here uses synthetic data rather than direct readings from these sources.
+Therefore, the results represent a simulated case study and should not be interpreted as measurements of actual
+Delhi NCR electricity consumption.
+
+3.3 System Requirements
+
+The system is designed to run locally on a computer with Python installed. It does not require specialized
+hardware, an external database server, or external API keys. Once the required Python dependencies have been
+installed, the application can run without an internet connection.
+
+3.3.1 Hardware Requirements
+
+The basic hardware requirements are presented in Table 3.2.
+
+Table 3.2: Hardware Requirements
+
+S. No. Component             Requirement
+
+1  Computer                  Desktop or laptop
+
+2  Processor                 Modern multi-core processor
+
+3  RAM                       8 GB recommended
+
+4  Storage                   Sufficient free space for dependencies, generated data and model artifacts
+
+5  Display                   Standard display capable of rendering a web browser
+
+6  Network                   Internet connection for initial dependency installation; not required for normal
+                             offline operation afterward
+
+3.3.2 Software Requirements
+
+The software requirements are listed in Table 3.3.
+
+                                                                         25
+Table 3.3: Software Requirements
+
+S. No. Software/Technology        Purpose
+
+1   Python 3.10 or later          Main application and data processing
+
+2   FastAPI                       Backend API development
+
+3   Uvicorn                       Running the backend application
+
+4   XGBoost                       Electricity-demand forecasting
+
+5   SQLite                        Relational data storage
+
+6   HTML5                         Dashboard structure
+
+7   CSS3                          Dashboard styling and responsive layout
+
+8   JavaScript                    Interactive dashboard functionality
+
+9   Scikit-learn and supporting Python Model evaluation and data-processing support, as
+
+    libraries                     configured in the project
+
+10  Web browser                   Accessing the local dashboard
+
+11  Pytest and HTTPX              Automated application and API testing
+
+The implemented system uses SQLite instead of MongoDB and a plain HTML/CSS/JavaScript frontend instead
+of React.js. This simplifies local setup and avoids the need for a separate frontend build process.
+
+3.4 Feasibility Analysis
+
+Feasibility analysis determines whether the proposed system can be developed and operated using the available
+resources and technologies.
+3.4.1 Technical Feasibility
+The system is technically feasible because it uses established software technologies and standard computing
+hardware. Python supports data processing and machine learning, FastAPI provides the backend API
+framework, and SQLite offers local relational data storage.
+XGBoost is used to train the forecasting model, while HTML, CSS, and JavaScript provide an interactive user
+interface. These technologies can be integrated into a single local application without requiring a separate
+database server or frontend build system.
+
+                                                                         26
+3.4.2 Economic Feasibility
+The project has relatively low development and operational costs because it relies on software libraries and local
+execution. It does not require paid cloud infrastructure, specialized grid-monitoring hardware, or subscription-
+based external APIs for the implemented demonstration.
+The generated dataset also removes the need to acquire large quantities of actual smart-meter data during the
+initial development stage.
+3.4.3 Operational Feasibility
+The application is designed to be operated through a web browser after starting the local Python application.
+Users can navigate the dashboard, select urban districts and historical periods, view consumption and emissions
+charts, inspect demand forecasts, and configure alert thresholds.
+The application also provides CSV export and model-retraining functionality, making it suitable for
+demonstrations and academic evaluation.
+3.4.4 Feasibility Summary
+The system is suitable for an academic minor project because it combines data analysis, machine learning,
+database management, API development, and web visualization in a locally executable application. However,
+its current operational feasibility applies to a simulated analytical environment rather than a production
+electricity-grid deployment.
+
+3.5 System Architecture
+
+The system architecture consists of data generation and processing, database storage, analytical and forecasting
+services, backend APIs, and the interactive frontend.
+The data-generation and processing component creates hourly records for the six simulated districts. These
+records are stored in SQLite, where they can be retrieved for consumption analysis and model preparation.
+The analytical component processes the stored records to calculate energy-consumption summaries, estimate
+associated carbon emissions, derive zone-level indicators, and prepare features for demand forecasting.
+XGBoost is used to learn relationships between historical demand, weather conditions, and time -related
+variables.
+The FastAPI backend connects these functions to the dashboard. It exposes endpoints for retrieving overview
+statistics, historical time series, district information, forecast results, alerts, settings, and downloadable data. It
+also supports updating configuration settings and retraining the forecasting model.
+
+                                                                         27
+The frontend presents this information through interactive pages, charts, filters, and controls. The architecture
+allows the user to examine historical observations and forecasts through a single interface.
+
+Table 3.4: Major System Components
+
+Component       Technology                    Responsibility
+
+Data generation and Python                    Generate, clean and prepare hourly
+processing                                    observations
+
+Database layer  SQLite                        Store and retrieve records efficiently
+
+Forecasting engine XGBoost                    Train the model and generate demand forecasts
+
+Backend         FastAPI and Uvicorn           Expose analytical functions through REST
+                                              APIs
+
+Frontend        HTML, CSS and JavaScript      Display interactive pages, charts and controls
+
+Model evaluation MAE, RMSE and R²             Assess       one-step-ahead  forecasting
+
+                                              performance
+
+Testing         Pytest and HTTPX              Verify application and API functionality
+
+Suggested figure placement: Insert a system architecture diagram after this section and caption it “Figure 3.1:
+Architecture of the VoltAtlas System.”
+
+3.6 System Workflow
+
+The system follows a sequence of operations beginning with data generation and ending with the presentation
+of analytical results.
+
+Step 1: Data initialization. When the application starts, it generates the synthetic dataset if the required data has
+not already been initialized. The records cover 120 days of hourly observations across six simulated districts.
+Step 2: Data storage. The generated records are saved in an SQLite database. Indexed timestamps support
+efficient retrieval of historical observations.
+
+Step 3: Historical analysis. The backend retrieves data for the selected district and historical period.
+Consumption trends, energy values, and emissions estimates are aggregated for display.
+
+Step 4: Emissions estimation. The system combines hourly energy values with the assumed electricity-
+generation mix and the corresponding illustrative emission factors.
+
+                                          28
+Step 5: Feature preparation. The forecasting engine prepares calendar variables, weather measurements,
+historical demand lags, and rolling averages for model training and prediction.
+
+Step 6: Model training and evaluation. The feature rows are divided chronologically into training and testing
+sets, with 80% used for training and 20% reserved for testing. The model's one-step-ahead predictions are
+evaluated using MAE, RMSE, and R² and compared against a lag-24 persistence baseline.
+
+Step 7: Demand forecasting. The trained XGBoost model produces a recursive forecast for the next 24 hours.
+Predicted demand values are used as inputs for future lag features during the forecast horizon.
+
+Step 8: Alert generation. Forecasted demand is compared with the configured capacity threshold. Exceedances
+are identified and presented as potential high-demand alerts.
+
+Step 9: Visualization and export. The dashboard presents historical consumption, emissions estimates, forecasts,
+zone-level indicators, and alerts. Users can also export data as CSV and initiate model retraining.
+
+Suggested figure placement: Insert a flowchart after this section and caption it “Figure 3.2: Operational
+Workflow of the VoltAtlas Application.”
+
+3.7 Functional and Non-Functional Requirements
+
+System requirements describe the functions the application must provide and the quality characteristics it should
+maintain.
+
+3.7.1 Functional Requirements
+
+The functional requirements of the implemented application are listed in Table 3.5.
+
+Table 3.5: Functional Requirements
+
+S. No. Requirement             Description
+
+1  Data generation             Generate reproducible hourly synthetic records for six simulated districts
+
+2  Historical analysis Display electricity-demand and energy-consumption trends
+
+3  Time-period filtering Support 24-hour, 7-day, 30-day and 90-day views
+
+4  District filtering          Allow users to examine individual districts or the combined view
+
+5  Emissions analysis Estimate electricity-related emissions using configured emission assumptions
+
+6  Demand forecasting Generate a recursive 24-hour demand forecast using XGBoost
+
+7  Model evaluation Report MAE, RMSE, R² and the persistence-baseline comparison
+
+                                            29
+8   Alerts             Identify forecasted threshold exceedances
+
+9   Settings           Allow configuration of capacity thresholds and the carbon factor
+
+10 Data export         Provide downloadable CSV data
+
+11  Model retraining   Allow the forecasting model to be retrained
+
+12 API access          Expose data and application functions through REST endpoints
+
+3.7.2 Non-Functional Requirements
+
+The non-functional requirements are summarized in Table 3.6.
+
+Table 3.6: Non-Functional Requirements
+
+S. No. Requirement                 Description
+
+1   Usability                      Provide a clear dashboard with understandable charts and navigation
+
+2   Performance                    Retrieve stored data and generate analytical outputs within practical local
+                                   execution times
+
+3   Reproducibility                Use deterministic data generation to support consistent demonstrations
+
+4   Maintainability                Separate data processing, backend functionality, frontend assets and tests
+
+5   Portability                    Support execution on compatible systems with Python and the required
+                                   dependencies
+
+6   Reliability                    Handle API requests and database operations consistently under normal
+                                   operating conditions
+
+7   Accessibility      of Present energy, emissions and forecast information in a structured
+                            interface
+    information
+
+8   Offline operation              Support normal application use without external API calls after
+                                   dependencies are installed
+
+These requirements define the expected behavior and operating characteristics of the implemented application.
+Actual performance and reliability should be established through testing rather than assumed from the design
+alone.
+
+Important methodological limitations
+
+The implementation includes several assumptions that must be documented when interpreting its outputs:
+
+    • The electricity and weather observations are synthetic, not live grid telemetry.
+
+                                                30
+    • The emission factors are illustrative assumptions rather than verified 2026 Delhi NCR marginal -
+         emissions values.
+
+    • The offline evaluation measures one-step-ahead prediction performance using observed lagged demand;
+         it does not establish the accuracy of the recursive 24-hour forecast.
+
+    • District forecasts use fixed proportional demand shares rather than independently trained models for
+         each district.
+
+    • The future weather projection reuses the previous day's hourly weather as a scenario assumption.
+    • Capacity alerts indicate threshold exceedance, not the probability of a blackout. Zone health scores are
+
+         heuristic indicators, not certified grid-safety measurements.
+These limitations distinguish the capabilities of the current academic prototype from those of a live grid -
+monitoring platform.
+
+                                                                         31
+         CHAPTER 4 - SYSTEM DESIGN AND IMPLEMENTATION
+
+4.1 Introduction
+
+This chapter describes the design and implementation of VoltAtlas — Urban Energy Grid & Emissions
+Analyzer. The project is developed as a web-based research prototype for analysing electricity consumption,
+estimating carbon emissions, forecasting short-term electricity demand, and displaying district-level energy
+indicators.
+The application combines data processing, machine learning, database management, backend API services, and
+an interactive dashboard. It uses synthetic hourly energy observations for six simulated urban districts, making
+the application reproducible without requiring access to a live electricity grid.
+The system is implemented using Python, FastAPI, SQLite, XGBoost, HTML, CSS, and JavaScript. The
+backend handles data processing and analytical operations, while the frontend presents the results through six
+dashboard sections: Overview, Energy Analytics, Carbon Intelligence, Demand Forecast, Grid Zones, and Alerts
+& Insights.
+The implementation is divided into the following major components:
+
+    1. Dataset generation and database initialization.
+    2. Data processing and feature preparation.
+    3. Electricity consumption and carbon emissions analysis.
+    4. XGBoost-based demand forecasting.
+    5. Backend development and REST API integration.
+    6. Frontend dashboard development.
+    7. Alerts, settings, and data export.
+    8. Integration and execution of the complete application.
+Note about the code in this chapter: The screenshots previously shared show selected portions of engine.py,
+main.py, index.html, and app.js, rather than the complete source files. The snippets below are based on the
+visible code and the project structure and behaviour described in the README. Where the exact source lines
+were not visible, the code is a representative implementation of the documented logic, not a verified verbatim
+extract. Before final submission, compare those snippets with the corresponding source files and replace them
+with the exact code where necessary.
+
+                                                                         32
+4.2 Technology Stack
+
+VoltAtlas uses a lightweight technology stack that allows the complete application to run locally on a single
+computer.
+
+Table 4.1: Technologies used in the project
+
+Technology  Purpose
+
+Python      Data processing, analytical operations, and machine learning
+
+FastAPI     Backend application and REST API endpoints
+
+SQLite      Local relational database for energy records and application data
+
+XGBoost     Electricity demand forecasting
+
+Pandas      Tabular data manipulation and time-series processing, where used by the backend
+
+HTML        Structure of the dashboard
+
+CSS         Dashboard styling and responsive layout
+
+JavaScript  Dashboard navigation, API requests, and dynamic visualizations
+
+Joblib      Storage and loading of the trained forecasting model
+
+JSON        Storage of model evaluation metrics and exchange of structured API data
+
+Pytest and HTTPX Automated testing and API testing
+
+4.3 System Architecture
+
+The system follows a layered architecture consisting of a presentation layer, an application layer, a data and
+machine learning layer, and a local storage layer.
+
+The frontend sends requests to the backend whenever a dashboard section needs data. FastAPI processes the
+request and retrieves or calculates the relevant information. The response is returned in a structured format that
+JavaScript uses to update the interface.
+
+                                             33
+                                                Figure 3.1 System Architecture
+The SQLite database stores the energy observations locally. The forecasting model is saved separately as a
+Joblib artifact, while the model evaluation report is stored as a JSON file.
+This separation makes the application easier to maintain because dashboard presentation, API processing,
+database operations, and forecasting logic are organised into separate components.
+
+4.4 Dataset Generation and Database Initialization
+
+4.4.1 Synthetic Dataset
+The project uses a synthetic dataset containing 120 consecutive days of hourly observations across six simulated
+urban districts. Synthetic data is generated by the application during initialization and provides the historical
+records needed for consumption analysis, emissions estimation, and demand forecasting.
+The six districts configured in the visible backend/engine.py source are:
+
+    • Central District
+    • North Ridge
+    • East Industrial
+    • South Gardens
+    • West Tech Park
+    • Riverfront
+These names represent simulated districts used for the prototype. They should not be interpreted as verified
+administrative or electricity distribution zones.
+
+                                                                         34
+The hourly dataset contains demand and weather-related measurements, together with information required for
+the emissions calculations and machine learning features.
+4.4.2 Database Configuration
+The database configuration in backend/engine.py defines the location of the SQLite database and the files used
+to store the trained model and evaluation report.
+Code Snippet 4.1: Configuration of database and model files
+File: backend/engine.py
+from pathlib import Path
+DATA = Path(__file__).resolve().parent.parent / "data"
+DB = DATA / "energy.sqlite3"
+MODEL = DATA / "demand_xgb.joblib"
+REPORT = DATA / "model_metrics.json"
+
+The code defines a common data directory and three separate file paths. The SQLite database stores energy
+records, the Joblib file stores the trained forecasting model, and the JSON file stores the evaluation report.
+This organisation keeps generated data and model artifacts separate from the application source code.
+4.4.3 Database Connection
+SQLite is used as the relational database because it can store structured records without requiring a separate
+database server.
+Code Snippet 4.2: Establishing a SQLite database connection
+File: backend/engine.py
+import sqlite3
+def connect():
+
+   DATA.mkdir(exist_ok=True, parents=True)
+   con = sqlite3.connect(DB)
+   con.row_factory = sqlite3.Row
+   return con
+
+The connect() function ensures that the data directory exists before opening the database connection. The
+sqlite3.connect() function establishes the connection, while sqlite3.Row allows returned records to be accessed
+using column names.
+
+                                                                         35
+The function can be reused by different database operations instead of creating connection logic repeatedly
+throughout the application.
+
+4.4.4 Database Initialization
+The project includes an initialization function in engine.py. The visible source shows that the function creates
+the database connection and executes SQL statements to create the required table if it does not already exist.
+Code Snippet 4.3: Initializing the energy readings table
+File: backend/engine.py
+def initialize(reset=False):
+
+   con = connect()
+   con.executescript("""
+
+      CREATE TABLE IF NOT EXISTS readings (
+         timestamp TEXT NOT NULL,
+         zone TEXT NOT NULL,
+         demand_mw REAL NOT NULL
+         -- Additional columns are defined in the full schema
+
+      );
+   """)
+   # Remaining initialization logic:
+   # Generate or load records and save them to the database.
+
+Note: This is a shortened representation of the visible table-creation logic. The actual project schema includes
+additional fields; retain the complete column definitions from engine.py in the final code extract.
+The CREATE TABLE IF NOT EXISTS statement prevents the application from unnecessarily recreating an
+existing table. The initialize() function also supports a reset parameter, whose precise behaviour should be
+described from the full source implementation.
+Database initialization is an important step because all subsequent analytical operations depend on the
+availability of valid records.
+
+4.5 Data Processing and Feature Preparation
+
+4.5.1 Data Processing
+
+                                                                         36
+Before the data can be used for analysis, the application must organise the observations into a consistent
+structure. The records contain time information, district identifiers, electricity demand, and weather-related
+measurements.
+
+The data-processing stage prepares the observations for aggregation and machine learning. Time information is
+converted into a date-time representation when required, while historical records can be grouped by the selected
+time interval or district.
+
+This processing enables the same dataset to support hourly charts, longer-period summaries, and the forecasting
+pipeline.
+
+4.5.2 Feature Engineering
+
+Feature engineering converts the historical observations into inputs that help the forecasting model learn patterns
+in electricity demand.
+
+The project documentation identifies the following features:
+
+Feature group Examples                                        Purpose
+
+Calendar features Hour, weekday, month, weekend indicator Represent daily and weekly patterns
+
+Weather features Temperature, humidity                        Represent weather-related variation
+
+Lag features  Lag 1, lag 24, lag 48, lag 168                  Represent recent and recurring demand
+
+Rolling features 24-hour and 168-hour rolling means           Summarise recent demand patterns
+
+A lag feature represents an earlier observation. For example, lag 24 represents demand from approximately 24
+hours earlier in an hourly time series. Lag 168 represents demand from approximately one week earlier.
+
+Rolling averages summarise demand across a moving window and help represent recent consumption levels.
+
+Code Snippet 4.4: Forecasting feature configuration
+
+File: backend/engine.py
+
+FACTORS = {
+   "coal": 0.96,
+   "gas": 0.47,
+   "solar": 0.045,
+   "wind": 0.012,
+
+}
+FEATURES = [
+
+   "hour", "weekday", "month", "is_weekend",
+
+                                                     37
+   "temp_c", "humidity",
+   "lag_1", "lag_24", "lag_48", "lag_168",
+]
+The FEATURES list shown here is a shortened extract based on the visible configuration in the project
+screenshot. The README also documents rolling-mean features, which should be included in the final extract
+if they appear in the complete feature list.
+
+The FACTORS dictionary is included here because it appears alongside the feature configuration in the source
+file. Its purpose is explained in Section 4.6.
+
+Feature engineering is important because an XGBoost model requires numerical input variables rather than raw,
+unprocessed time-series records.
+
+4.6 Electricity Consumption and Carbon Emissions Analysis
+
+4.6.1 Electricity Consumption Analysis
+
+The Energy Analytics section presents historical electricity consumption information for the selected period and
+district. The backend retrieves the relevant observations and aggregates them for display.
+
+The application supports multiple historical periods, including 24 hours, 7 days, 30 days, and 90 days. These
+filters help users explore changes at different time scales.
+
+The JavaScript frontend requests the required data from the backend, and the returned values are used to update
+the charts and summary panels. This makes the dashboard interactive without requiring users to manually
+process the database.
+
+4.6.2 Carbon Emission Factors
+
+VoltAtlas estimates emissions using assumed contributions from four energy sources: coal, natural gas, solar,
+and wind.
+
+The visible source code defines the following illustrative emission factors.
+
+Table 4.2: Illustrative emission factors used by VoltAtlas
+
+Energy source  Emission factor (kg CO₂e/kWh)
+
+Coal           0.96
+
+Gas            0.47
+
+Solar          0.045
+
+                                        38
+Wind  0.012
+
+These values are configuration assumptions used by the prototype. They are not verified, current marginal
+emission factors for the Delhi NCR electricity grid.
+
+The application combines these factors with the generation-mix shares assigned to an hourly record to obtain
+an effective emission factor.
+
+4.6.3 Emission Factor Calculation
+
+Code Snippet 4.5: Calculating the effective emission factor
+
+File: backend/main.py
+def factor(row, override=None):
+
+   if override is not None:
+      return float(override)
+
+   return sum(
+      float(row[k]) * v
+      for k, v in FACTORS.items()
+
+   )
+The function calculates the effective emission factor by multiplying the share of each energy source by its
+corresponding emission factor and adding the results.
+
+If an override is supplied, the function uses that value instead of the generation -mix calculation. This supports
+the application's configurable carbon-factor setting.
+
+The snippet follows the visible calculation logic in main.py. The exact imports and the complete definition of
+FACTORS should be retained from the source files when preparing the final code listing.
+
+4.6.4 Estimating Carbon Emissions
+
+For an hourly record, the application calculates estimated emissions using electricity demand and the effective
+emission factor.
+
+The implemented calculation is visible in the enriched() function of backend/main.py.
+
+Code Snippet 4.6: Calculating estimated emissions
+
+File: backend/main.py
+def enriched(df):
+
+   d = df.copy()
+   d["ef"] = sum(
+
+      d[k] * v for k, v in FACTORS.items()
+
+                                                   39
+   )
+
+   override = prefs().get("emission_factor_override", "")
+   if override:
+
+      d["ef"] = float(override)
+   d["emissions_t"] = d.demand_mw * d.ef
+   return d
+
+Note: This is a readable extract of the visible logic. Confirm the complete prefs() function, imported
+dependencies, and exact surrounding statements in main.py before inserting it as a verbatim source listing.
+In the implementation, demand_mw represents the average power demand during a one-hour interval. Its
+numerical value therefore corresponds to the energy consumed in MWh during that interval.
+
+                                                     𝐸MWh = 𝑃MW × 1 hour
+                                              CO2etonnes = 𝐸MWh × 𝐸𝐹kg/kWh
+
+                                                                        1000
+Since one MWh equals 1,000 kWh, the conversion from MWh to kWh and from kilograms to tonnes cancels
+numerically. Thus, for a one-hour interval, the implementation can multiply the demand in MW by the emission
+factor in kg CO₂e/kWh to obtain the numerical value in tonnes CO₂e.
+The function adds the estimated emissions to the processed dataset. These values can then be aggregated for the
+Carbon Intelligence dashboard and the district leaderboard.
+4.6.5 District-Wise Emissions Comparison
+The frontend sorts the district records in descending order of estimated emissions and calculates each district's
+share of the total.
+Code Snippet 4.7: Sorting districts by estimated emissions
+File: frontend/assets/app.js
+const zones = zonesData.zones.sort(
+
+   (a, b) => b.emissions_t - a.emissions_t
+);
+const totalEmissions = zones.reduce(
+
+   (sum, z) => sum + z.emissions_t,
+   0
+);
+
+                                                                         40
+The code sorts the district records from highest to lowest estimated emissions. It then calculates the total
+emissions by adding the emissions values of all districts.
+The resulting data can be used to construct a leaderboard that compares energy consumption, estimated
+emissions, and percentage contribution across the simulated districts.
+
+4.7 Demand Forecasting Using XGBoost
+
+4.7.1 Overview
+The Demand Forecast module uses XGBoost regression to estimate electricity demand for the next 24 hours.
+XGBoost is a gradient-boosting algorithm that combines multiple decision trees to learn relationships between
+input features and a target variable.
+For VoltAtlas, the target variable is electricity demand. The input variables include calendar features, weather
+measurements, historical demand lags, and rolling statistics.
+The forecasting pipeline includes the following stages:
+
+    1. Prepare the historical hourly observations.
+    2. Generate the calendar, weather, lag, and rolling features.
+    3. Divide the observations chronologically into training and testing sets.
+    4. Train the XGBoost regression model.
+    5. Evaluate the model on held-out observations.
+    6. Compare its performance with a lag-24 persistence baseline.
+    7. Generate the next 24 hourly predictions recursively.
+    8. Return the forecast to the dashboard.
+4.7.2 Chronological Training and Testing
+The project uses a chronological 80:20 split. Earlier observations are used for training, while later observations
+are reserved for testing. This approach is more appropriate for time-series forecasting than randomly mixing
+observations from different times.
+Code Snippet 4.8: Chronological dataset splitting
+Representative logic for the forecasting pipeline in backend/engine.py:
+split_index = int(len(data) * 0.80)
+train_data = data.iloc[:split_index]
+
+                                                                         41
+test_data = data.iloc[split_index:]
+X_train = train_data[FEATURES]
+y_train = train_data["demand_mw"]
+X_test = test_data[FEATURES]
+y_test = test_data["demand_mw"]
+This snippet illustrates the chronological split described in the project documentation. It is not confirmed as the
+exact source code from the screenshots; the final report should use the actual variable names and model -training
+logic in engine.py.
+
+The model learns relationships between the features and historical demand during training. Its predictions on
+the held-out test data are then compared with the corresponding observed values.
+
+4.7.3 Training the XGBoost Model
+
+The project saves its trained model in data/demand_xgb.joblib. This allows the application to reuse the trained
+model instead of necessarily training it for every forecast request.
+
+Code Snippet 4.9: XGBoost model training
+Representative model-training logic for backend/engine.py:
+from xgboost import XGBRegressor
+model = XGBRegressor(
+
+   n_estimators=300,
+   max_depth=6,
+   learning_rate=0.05,
+   random_state=42
+)
+model.fit(X_train, y_train)
+
+The code demonstrates how an XGBoost regression model can be created and trained. The parameter values
+above are illustrative and must not be reported as the project's actual configuration unless they match the
+complete engine.py source.
+
+The trained model learns relationships between the prepared features and electricity demand. The actual
+hyperparameters, preprocessing steps, and model-saving operation should be copied from the project's source
+code.
+
+4.7.4 Model Evaluation
+
+The project evaluates forecasting performance using MAE, RMSE, and \(R^2\). These metrics describe the
+model's error and fit on the held-out observations.
+
+                                                                         42
+Code Snippet 4.10: Calculating regression evaluation metrics
+from sklearn.metrics import (
+
+   mean_absolute_error,
+   mean_squared_error,
+   r2_score
+)
+import numpy as np
+mae = mean_absolute_error(y_test, predictions)
+rmse = np.sqrt(
+   mean_squared_error(y_test, predictions)
+)
+r2 = r2_score(y_test, predictions)
+
+MAE measures the average absolute prediction error. RMSE gives greater weight to larger errors, while R²
+describes how well the predictions explain the variation in the observed values.
+
+The README confirms that the project records these metrics and compares the model with a lag-24 persistence
+baseline. The exact implementation should be taken from the source code rather than assumed from this
+representative example.
+
+4.7.5 Recursive 24-Hour Forecasting
+
+After training, the application generates the next 24 hourly demand predictions. The process is recursive because
+each newly predicted demand value may be used as an input when preparing later forecast steps.
+
+At each step, the model uses the available calendar and weather inputs together with the relevant lagged and
+rolling demand features. Once a prediction is produced, the prediction sequence is updated before the next step.
+
+This approach allows the application to generate a continuous 24-hour forecast. However, prediction errors may
+accumulate over successive steps. The held-out one-step-ahead metrics should therefore not be presented as the
+verified error of the complete 24-hour recursive forecast.
+
+The forecast also uses the previous day's hourly weather pattern as a scenario assumption instead of obtaining
+future weather predictions from an external weather service.
+
+Code Snippet 4.11: Recursive forecasting workflow
+
+The following pseudocode illustrates the process. It is explanatory and should not be presented as a verbatim
+extract from the source.
+
+forecast = []
+for step in range(24):
+
+                                                                         43
+   features = prepare_next_hour_features(
+      history,
+      step
+
+   )
+   predicted_demand = model.predict(features)[0]
+   forecast.append(predicted_demand)
+   history.append(predicted_demand)
+
+In this simplified illustration, prepare_next_hour_features() represents the feature-generation logic required by
+the actual project. The exact implementation may update a structured data frame rather than a simple list.
+The resulting forecast is provided to the frontend for visualisation in the Demand Forecast dashboard.
+
+4.8 Backend Development Using FastAPI
+
+4.8.1 Role of the Backend
+FastAPI provides the server-side functionality of VoltAtlas. It receives requests from the frontend, performs or
+coordinates the required operations, and returns responses containing the relevant data.
+The backend is implemented in backend/main.py. The project exposes endpoints for application health,
+metadata, overview statistics, historical time series, district information, forecasts, alerts, insights, settings, and
+CSV export. It also provides endpoints for updating settings and retraining the model.
+4.8.2 Application Entry Point
+The project uses start.py to launch the backend server.
+Code Snippet 4.12: Starting the FastAPI application
+File: start.py
+import uvicorn
+if __name__ == "__main__":
+
+   uvicorn.run(
+      "backend.main:app",
+      host="127.0.0.1",
+      port=8000,
+      reload=False
+
+   )
+
+                                                                         44
+This matches the launcher structure visible in the provided screenshot. The uvicorn.run() function starts the
+application exposed as app in backend.main.
+
+The application listens on the local address at port 8000. Once the server starts successfully, the dashboard can
+be opened at http://localhost:8000.
+
+4.8.3 REST API Endpoints
+
+The application provides several API endpoints, as documented in the project README.
+
+Table 4.3: Important API endpoints
+
+Endpoint                                       Purpose
+
+GET /api/health                                Checks the application's health response
+
+GET /api/metadata                              Returns application metadata
+
+GET /api/overview?zone=ALL                     Retrieves overview information for the selected scope
+
+GET /api/timeseries?period=7d&interval=hour Retrieves historical time-series data
+
+GET /api/zones                                 Returns district-level information
+
+GET /api/forecast                              Retrieves the demand forecast
+
+GET /api/alerts                                Retrieves generated alerts
+
+GET /api/insights                              Retrieves analytical insights
+
+GET /api/settings                              Retrieves current settings
+
+PUT /api/settings                              Updates supported settings
+
+GET /api/export?period=7d                      Exports data for the selected period
+
+POST /api/retrain                              Requests model retraining
+
+The parameters shown in the table are examples of the documented endpoint usage. Exact defaults and accepted
+values should be checked against the route definitions in main.py.
+
+4.8.4 API Route Implementation
+
+Code Snippet 4.13: Illustrative FastAPI route
+
+File: backend/main.py
+from fastapi import FastAPI
+app = FastAPI()
+
+                                                                         45
+@app.get("/api/health")
+def health():
+
+   return {"status": "ok"}
+This short example illustrates the structure of a FastAPI endpoint: the decorator defines the URL and HTTP
+method, and the function returns a response.
+Important: The exact health endpoint response was not visible in the screenshots provided. Verify the actual
+route in main.py before using this snippet as a direct source extract. For the final report, a short extract of a real
+implemented route is preferable.
+The backend's other routes follow the application's API structure and connect dashboard requests with the
+appropriate data-processing and analytical functions.
+
+4.9 Frontend Dashboard Implementation
+
+4.9.1 Frontend Structure
+The frontend is developed using HTML, CSS, and JavaScript. It does not use React.js or another frontend
+framework.
+The relevant files are:
+
+    • frontend/index.html — page structure and dashboard navigation.
+    • frontend/assets/style.css — layout, colours, typography, and responsive styling.
+    • frontend/assets/app.js — navigation behaviour, API interactions, and dynamic dashboard rendering.
+The interface is divided into six dashboard sections, allowing users to access different analytical functions from
+the sidebar.
+4.9.2 Dashboard Navigation
+The navigation buttons are defined in frontend/index.html. Each button has a data -page attribute identifying the
+corresponding dashboard section.
+Code Snippet 4.14: Dashboard navigation structure
+File: frontend/index.html
+<nav id="nav">
+   <button
+      class="nav-item selected"
+      data-page="overview">
+      Overview
+
+                                                                         46
+   </button>
+
+   <button
+      class="nav-item"
+      data-page="analytics">
+      Energy analytics
+
+   </button>
+
+   <button
+      class="nav-item"
+      data-page="emissions">
+      Carbon intelligence
+
+   </button>
+
+   <button
+      class="nav-item"
+      data-page="forecast">
+      Demand forecast
+
+   </button>
+
+   <button
+      class="nav-item"
+      data-page="zones">
+      Grid zones
+
+   </button>
+
+   <button
+      class="nav-item"
+      data-page="alerts">
+     Alerts & insights
+
+   </button>
+</nav>
+
+This is a simplified, readable version of the navigation markup visible in the provided index.html screenshot.
+The actual source also includes icons, CSS classes, and additional layout elements.
+
+                                                                         47
+The data-page attributes allow JavaScript to associate each navigation button with its corresponding dashboard
+view. The selected navigation item can then be styled to show which section is active.
+
+4.9.3 Dashboard Styling
+The style.css file controls the appearance of the application. It defines the layout of the sidebar and main content
+area, typography, spacing, buttons, panels, and dashboard components.
+The following example illustrates the type of layout styling used by the frontend.
+Code Snippet 4.15: Styling dashboard navigation
+File: frontend/assets/style.css
+.nav-item {
+
+   display: flex;
+   align-items: center;
+   gap: 10px;
+   padding: 12px;
+   border: none;
+   cursor: pointer;
+}
+.nav-item.selected {
+   font-weight: 600;
+}
+This is a representative CSS example, not a verified verbatim extract of the project's stylesheet. The visible
+screenshot of style.css shows styling rules for dashboard components, but the complete navigation rules were
+not readable in the supplied image.
+For the final report, use the actual CSS rules that control the sidebar or selected navigation state.
+4.9.4 Dynamic Dashboard Rendering
+The JavaScript file app.js handles dynamic dashboard content. It retrieves data from the backend, prepares the
+information for display, and renders charts or tables.
+The visible source shows the emissions dashboard creating an emissions-over-time panel and a district
+leaderboard. The frontend sorts district records and constructs table rows using values such as district name,
+energy consumption, and estimated emissions.
+
+                                                                         48
+The relevant logic is shown in Code Snippets 4.7 and 4.16.
+Code Snippet 4.16: Constructing district leaderboard rows
+File: frontend/assets/app.js
+const leaderboardRows = zones.map((z) => [
+
+   `<tr>`,
+   `<td>${z.name}</td>`,
+   `<td>${fmt(z.energy_mwh)} MWh</td>`,
+   `<td>${fmt(z.emissions_t)} tCO₂e</td>`,
+   `</tr>`
+].join('')).join('');
+
+This extract follows the visible row-generation logic in the supplied screenshot. The complete implementation
+also calculates each district's percentage contribution and places the generated rows inside the relevant table.
+The frontend uses this approach to transform structured API data into visible dashboard content. It allows the
+leaderboard to update when the underlying data changes.
+4.9.5 Interactive Charts
+The dashboard includes charts for historical consumption and estimated emissions, as well as the demand
+forecast. The JavaScript code prepares the required values and renders the relevant visualizations.
+The application supports period and district filters so users can change the scope of the displayed information.
+The frontend then requests the corresponding data and updates the dashboard.
+The charts are intended to support interpretation of the results rather than replace the underlying numerical data.
+Any findings reported from the charts should be based on the actual outputs of the running application.
+
+4.10 Alerts, Insights, and Configuration
+
+4.10.1 Capacity Threshold Alerts
+VoltAtlas includes a configurable capacity-threshold alert feature. The purpose of this functionality is to identify
+cases where the modelled demand exceeds a configured threshold.
+The alerts are intended to support basic monitoring of the simulated system. They do not calculate blackout
+probability and should not be interpreted as predictions of actual grid failures.
+The threshold can be configured through the application's settings. The backend processes the setting and uses
+it when evaluating the relevant energy data.
+
+                                                                         49
+Code Snippet 4.17: Illustrative capacity-threshold check
+File: backend/main.py
+def exceeds_capacity(demand_mw, capacity_mw):
+
+   return demand_mw > capacity_mw
+This is a simplified illustration of a threshold check, not a verified extract from the project source. Use the actual
+alert-generation function from main.py in the final report.
+The alert feature demonstrates how analytical rules can be used to highlight conditions that may require further
+examination. Its reliability depends on the correctness of the configured threshold and the quality of the input
+data.
+4.10.2 Configurable Settings
+The application supports settings related to capacity thresholds and carbon emission factors. These settings
+allow users to modify selected assumptions without manually changing the main analytical code.
+The emission-factor override affects the emissions calculation, while the capacity threshold controls the
+conditions under which threshold alerts are generated.
+The settings are managed through the backend and can be accessed through the frontend interface.
+4.10.3 Data Export and Model Retraining
+The application also provides a data export endpoint and a model retraining endpoint. The export feature allows
+supported energy data to be retrieved in CSV format. The retraining endpoint initiates the model retraining
+operation implemented by the backend.
+These functions make the prototype more useful for experimentation because users can extract data for further
+analysis and request an updated forecasting model when required.
+The precise behaviour of the endpoints should be documented according to their implementation in
+backend/main.py.
+
+4.11 System Integration
+
+The individual components of VoltAtlas are integrated to provide a single application for energy analysis.
+The overall execution process is as follows:
+
+    1. The user launches the application using start.py.
+    2. The FastAPI server starts and makes the application available locally.
+
+                                                                         50
+    3. The application initializes or accesses the generated hourly energy records stored in SQLite.
+    4. The user opens the dashboard in a web browser.
+    5. The frontend requests data through the backend's REST API.
+    6. The backend retrieves, processes, or aggregates the required information.
+    7. The forecasting component generates demand predictions when requested.
+    8. The emissions component estimates carbon emissions using the configured assumptions.
+    9. The frontend displays the results through charts, tables, summary indicators, and alert panels.
+The following figure can be included to represent the integration process.
+
+                                                Figure 4.2 Execution Workflow
+Figure 4.2: End-to-end execution workflow of VoltAtlas.
+The integration enables the dashboard to present the results of multiple analytical operations through a common
+interface. It also keeps the forecasting model and data-processing logic separate from the frontend, making the
+application easier to extend.
+
+4.12 Limitations of the Implementation
+
+Although VoltAtlas demonstrates an integrated energy analytics workflow, several limitations must be
+considered while interpreting its outputs.
+
+                                                                         51
+1. Synthetic dataset: The application uses generated observations rather than actual smart -meter readings or live
+electricity-grid measurements.
+2. Illustrative emission factors: The emission factors are assumptions used for demonstration and are not verified
+current regional marginal emission factors.
+3. Recursive forecasting: The 24-hour forecast is generated recursively, meaning errors in earlier predictions
+can influence later predictions.
+4. Weather assumptions: The forecast uses the previous day's hourly weather pattern as an assumption instead
+of a live weather forecast.
+5. District forecasting: District-level forecasts use fixed proportional demand shares rather than independently
+trained forecasting models for each district.
+6. Heuristic zone health: The zone health indicator is based on a heuristic involving losses and power factor. It
+is not a verified grid safety classification.
+7. Capacity alerts: Threshold alerts indicate that a configured limit has been exceeded; they do not estimate the
+probability of a blackout.
+These limitations define the current scope of the project and provide opportunities for future development.
+Integrating verified energy data, reliable weather forecasts, validated emission factors, and more rigorous
+forecasting evaluation would improve its practical applicability.
+
+4.13 Chapter Summary
+
+This chapter described the design and implementation of VoltAtlas — Urban Energy Grid & Emissions
+Analyzer. The application combines Python-based data processing, SQLite storage, FastAPI backend services,
+XGBoost demand forecasting, and an interactive HTML, CSS, and JavaScript dashboard.
+The implementation includes synthetic hourly dataset generation, database initialization, feature engineering,
+electricity consumption analysis, estimated carbon emissions, a recursive 24-hour demand forecast, REST API
+endpoints, district-level visualizations, configurable settings, capacity-threshold alerts, and data export.
+The system provides a reproducible environment for demonstrating the integration of machine learning and
+energy analytics. However, its outputs must be interpreted within the limitations of the synthetic dataset and the
+assumptions used in the forecasting and emissions modules.
+The next chapter presents the experimental setup, dashboard outputs, forecasting evaluation, system testing, and
+discussion of the results obtained from the running application.
+
+                                                                         52
+                     CHAPTER 5 - RESULTS AND DISCUSSION
+
+5.1 Experimental Setup
+
+The VoltAtlas — Urban Energy Grid & Emissions Analyzer was implemented as a web-based prototype for
+analysing electricity consumption, estimating carbon emissions, forecasting short -term electricity demand, and
+presenting district-level energy information. The system was tested in a simulated urban energy environment
+representing six districts.
+
+The application generates 120 consecutive days of hourly synthetic energy records. These records include
+electricity demand and weather-related variables. The generated dataset is stored in an SQLite database and
+processed using Python-based analytical functions.
+
+The backend is developed using FastAPI, while the forecasting component uses XGBoost regression. The user
+interface is developed using HTML, CSS, and JavaScript. The frontend communicates with the backend through
+REST API endpoints to retrieve data and display the results.
+
+Table 5.1: Experimental setup of VoltAtlas
+
+Parameter               Description
+
+Project name            VoltAtlas — Urban Energy consumption, emission and demand forecasting
+                        system.
+
+Dataset                 Synthetic hourly energy records
+
+Observation period      120 consecutive days
+
+Number of simulated districts Six
+
+Backend framework       FastAPI
+
+Database                SQLite
+
+Forecasting algorithm   XGBoost Regressor
+
+Frontend technologies   HTML, CSS, JavaScript
+
+Forecasting horizon     24 hours
+
+Data analysis           Electricity consumption and estimated carbon emissions
+
+Evaluation metrics      MAE, RMSE and R²
+
+Development environment Python and Visual Studio Code
+
+                                            53
+The experimental environment provides a reproducible way to demonstrate energy analytics without requiring
+direct access to live electricity-grid infrastructure. Since the dataset is simulated, the results represent the
+behaviour of the prototype and should not be interpreted as actual measurements of the Delhi NCR electricity
+grid.
+
+5.2 Electricity Consumption Analysis Results
+
+The Energy Analytics module presents historical electricity consumption information for the selected time
+period and district. Users can explore data across different time ranges, including 24 hours, 7 days, 30 days, and
+90 days.
+The module helps users examine variations in electricity demand and compare consumption patterns over time.
+The historical data can be aggregated at supported intervals to make short-term and longer-term patterns easier
+to understand.
+The application also provides district-level energy information. This allows users to compare the simulated
+districts and identify areas with relatively higher or lower energy consumption within the generated dataset.
+The results presented in this module are derived from the application's synthetic records. Therefore, the analysis
+demonstrates how an energy monitoring dashboard can present consumption information rather than
+establishing the actual consumption characteristics of any real urban district.
+
+Figure 5.1: Energy Analytics dashboard showing historical electricity consumption and related visualizations.
+
+                                                                         54
+The dashboard provides a convenient visual interface for exploring the generated data. The use of interactive
+filters allows users to change the displayed period and district without manually processing the underlying
+records.
+
+5.3 Carbon Emissions Analysis Results
+
+The Carbon Intelligence module presents estimated carbon emissions associated with the electricity
+consumption recorded in the simulated dataset.
+The application estimates emissions using an effective emission factor derived from the assumed energy -
+generation mix. The factors used in the prototype include coal, natural gas, solar, and wind. A configurable
+emission-factor override is also supported.
+The calculation follows the general relationship:
+
+       Estimated carbon emissions = Electricity consumption × Effective emission factor
+
+For the hourly records, electricity demand expressed in MW corresponds numerically to the energy consumed
+in MWh during a one-hour interval. When the effective emission factor is expressed in kg CO₂e/kWh, the
+numerical result for that interval can be expressed in tonnes CO₂e.
+The dashboard presents estimated emissions over time and supports comparison between the simulated districts.
+A district leaderboard sorts the districts according to their estimated emissions and can display their energy
+consumption and contribution to total emissions.
+
+   Figure 5.2: Carbon Intelligence dashboard showing estimated emissions and district-wise comparison.
+
+                                                                         55
+The results allow users to examine how electricity consumption and assumed generation sources influence the
+calculated emissions. Districts with higher consumption may contribute more to total estimated emissions,
+although the result also depends on the emission factors and generation-mix assumptions assigned to their
+records.
+The emissions values are estimates produced using illustrative assumptions. They should not be treated as
+verified carbon inventories or official emission measurements for Delhi NCR.
+
+5.4 Electricity Demand Forecasting Results
+
+The Demand Forecast module presents the predicted electricity demand for the next 24 hours. The forecasting
+component uses an XGBoost regression model trained on historical synthetic energy observations.
+The model uses multiple features, including calendar information, temperature, humidity, previous demand
+values, and rolling averages. Historical demand lags include 1, 24, 48, and 168 hours, while rolling statistics
+summarise demand over selected historical windows.
+The training and testing observations are separated chronologically using an 80:20 split. Earlier observations
+are used to train the model, while later observations are reserved for evaluation.
+After training, the system generates the next 24 hourly predictions recursively. The predicted demand is used
+when preparing subsequent forecast steps. This allows the application to produce a continuous forecast, although
+prediction errors may accumulate over the forecasting horizon.
+
+ Figure 5.3: Demand Forecast dashboard displaying the predicted electricity demand for the next 24 hours.
+
+                                                                         56
+The forecast dashboard provides a visual representation of the expected demand pattern. It can help users
+explore how predicted demand changes across the upcoming hours and understand the potential usefulness of
+short-term forecasting for energy planning.
+The forecast is based on the model and assumptions used by the prototype. In particular, the weather values for
+the future projection reuse the previous day's hourly weather pattern rather t han actual weather forecasts.
+Therefore, the displayed forecast should be considered a simulated projection rather than a validated prediction
+of real-world electricity demand.
+
+5.5 Model Evaluation Using MAE, RMSE and R²
+
+The forecasting model is evaluated using three standard regression metrics: Mean Absolute Error (MAE), Root
+Mean Squared Error (RMSE), and the coefficient of determination (R²). The project also includes a lag -24
+persistence baseline for comparison.
+5.5.1 Mean Absolute Error
+MAE calculates the average absolute difference between actual and predicted demand values.
+MAE = (1/n) Σ |yᵢ − ŷᵢ|
+A lower MAE indicates that the predictions are, on average, closer to the observed values. Since demand is
+measured in MW, the MAE is also expressed in MW.
+5.5.2 Root Mean Squared Error
+RMSE is the square root of the average squared prediction errors.
+RMSE = √[(1/n) Σ (yᵢ − ŷᵢ)²]
+RMSE gives greater weight to larger prediction errors. A lower RMSE generally indicates better predictive
+performance on the evaluated observations.
+5.5.3 Coefficient of Determination
+R² measures how well the model's predictions explain the variation in the observed target values. A value closer
+to 1 generally indicates a better fit on the evaluated dataset. Its interpretation depends on the data and evaluation
+setting, and it should not be used alone to establish model quality.
+5.5.4 Comparison with the Persistence Baseline
+The project compares XGBoost predictions with a lag-24 persistence baseline. This baseline uses demand from
+24 hours earlier as a simple reference prediction.
+
+                                                                         57
+The metrics recorded during testing are one-step-ahead evaluation results using observed historical lag values.
+They should not be presented as the measured error of the complete 24-hour recursive forecast. Evaluating the
+complete forecast horizon would require a separate walk-forward evaluation procedure.
+Until the metric values are inserted and compared, no conclusion should be made that XGBoost outperforms
+the persistence baseline.
+
+5.6 Dashboard Outputs and Visualizations
+
+The VoltAtlas interface consists of six dashboard sections. Each section serves a specific purpose while using a
+common interface and backend.
+5.6.1 Overview Dashboard
+The Overview dashboard serves as the main entry point to the application. It provides a consolidated view of
+the energy system and its key indicators.
+
+                                       Figure 5.4: Overview dashboard of VoltAtlas.
+The dashboard allows users to begin exploring the application's energy information and navigate to the other
+analytical sections. The displayed indicators reflect the generated dataset and the calculations performed by the
+application.
+5.6.2 Energy Analytics Dashboard
+The Energy Analytics dashboard focuses on historical electricity consumption. Its filters allow users to explore
+different time periods and district selections.
+This module supports examination of demand variations and comparison of consumption patterns over time.
+
+                                                                         58
+5.6.3 Carbon Intelligence Dashboard
+The Carbon Intelligence dashboard presents estimated emissions over time and provides district -level
+comparisons.
+The module makes the emissions calculations easier to interpret through visualizations and a district
+leaderboard.
+5.6.4 Demand Forecast Dashboard
+The Demand Forecast dashboard presents the next 24 hours of predicted demand.
+The module presents the output of the trained XGBoost model in a form that can be examined through the web
+interface.
+5.6.5 Grid Zones Dashboard
+The Grid Zones dashboard provides information about the six simulated urban districts. It supports district -wise
+comparison of energy-related indicators and zone information.
+
+                        Figure 5.8: Grid Zones dashboard showing district-level information.
+The module helps users examine the differences between the simulated districts. The district values and
+associated indicators are generated or calculated within the prototype and are not live grid measurements.
+5.6.6 Alerts and Insights Dashboard
+The Alerts & Insights dashboard presents generated alerts and analytical insights. The capacity-alert
+functionality checks whether demand exceeds a configured threshold.
+
+                                                                         59
+       Figure 5.9: Alerts & Insights dashboard displaying generated alerts and analytical information.
+
+The module demonstrates how threshold-based rules can highlight conditions for further examination. These
+alerts indicate threshold exceedance under the configured assumptions; they do not predict blackouts or establish
+actual grid safety.
+
+Overall, the six dashboard sections provide a unified interface for exploring historical energy information,
+estimated emissions, predicted demand, district-level data, and generated alerts.
+
+5.7 System Testing
+
+System testing is required to verify that the application's major functions operate as intended. The project
+includes a test directory containing tests/test_project.py. The following table identifies the main areas that
+should be checked during testing.
+
+Table 5.3: System testing checklist
+
+Test ID Functionality                Expected result
+
+T1  Application launch FastAPI application starts and the dashboard can be accessed locally
+
+T2  Database initialization Synthetic energy records are generated or loaded and stored in SQLite
+
+T3  Dashboard navigation All six dashboard sections can be opened
+
+T4  Historical data filters Supported period and district selections update the displayed information
+
+T5  Energy analytics                 Historical consumption information is returned and displayed
+
+                                                      60
+T6  Carbon emissions  Estimated emissions are calculated and displayed
+
+T7  Demand forecasting The application returns a 24-hour demand forecast
+
+T8  Model evaluation  Evaluation metrics are available in the model report
+
+T9  Settings          Supported configuration values can be retrieved and updated
+
+T10 Data export       The export endpoint returns the requested data in CSV format
+
+T11 Alerts and insights Generated alerts and analytical information are displayed
+
+T12 Model retraining  The retraining endpoint initiates the implemented retraining operation
+
+The expected results in this table describe the intended behaviour of the application. They do not establish that
+every test has passed. The actual status of each test should be filled in after running the application and the
+automated test suite.
+
+The project README provides the following command for running automated tests:
+
+python -m pytest -q
+
+The testing results should be recorded after executing this command in the project environment.
+
+5.8 Discussion of Results
+
+The implementation of VoltAtlas demonstrates how energy data processing, emissions estimation, demand
+forecasting, and dashboard visualizations can be integrated into a single web application.
+
+The historical analysis module provides a way to examine simulated electricity consumption over different
+periods. The Carbon Intelligence module extends this analysis by estimating associated emissions using
+configurable assumptions. Together, these functions demonstrate how consumption and emissions information
+can be presented within a common interface.
+
+The XGBoost forecasting component adds a predictive element to the system. By using historical demand,
+weather variables, calendar information, and lagged features, the model generates a 24-hour demand projection.
+The project's chronological training and testing procedure provides a basis for evaluating the model on later
+observations. However, the actual model metrics must be examined before drawing conclusions about predictive
+performance.
+
+The six dashboard sections make the results accessible through a graphical interface. Users can explore the
+overview, historical energy analytics, carbon estimates, demand forecasts, simulated grid zones, and alerts
+without directly querying the database.
+
+                                                                         61
+The prototype also has important limitations. Its records are synthetic, its emission factors are illustrative, and
+its district forecasts use fixed proportional demand shares rather than separately trained models. The zone health
+indicator is heuristic, and capacity alerts are threshold-based. Consequently, the results demonstrate the
+operation of the software and its analytical workflow rather than the performance of a live urban electricity
+monitoring system.
+Future improvements could include integrating verified smart-meter data, obtaining reliable weather forecasts,
+using regionally appropriate emission factors, and conducting walk-forward evaluation of the complete 24-hour
+forecast. Further work could also examine the calibration of alerts and develop more robust district-specific
+forecasting models.
+
+5.9 Chapter Summary
+
+This chapter described the experimental setup, analytical outputs, forecasting approach, dashboard
+visualizations, and system-testing plan for VoltAtlas. The application provides six interconnected dashboard
+sections for exploring simulated electricity consumption, estimating carbon emissions, forecasting demand,
+comparing districts, and viewing alerts and insights.
+The results demonstrate the integration of a Python-based backend, SQLite database, XGBoost forecasting
+model, and interactive web interface. However, the quantitative forecasting results and automated testing
+outcomes must be verified from the actual project files before final submission.
+The findings establish the prototype as a demonstration of integrated urban energy analytics. Its practical use in
+real electricity-grid planning would require verified data sources, validated emissions assumptions, and further
+evaluation under realistic operating conditions.
+
+                                                                         62
+     CHAPTER 6 - CONCLUSION, SUMMARY AND FUTURE SCOPE
+
+This chapter summarizes the work carried out in the VoltAtlas project, presents the conclusions drawn from its
+development, discusses its limitations, and identifies possible improvements for future versions. It also explains
+the project's contribution towards selected Sustainable Development Goals (SDGs).
+
+6.1 Project Summary
+
+VoltAtlas — Urban Energy Grid & Emissions Analyzer is a web-based application developed to analyse
+electricity consumption, estimate associated carbon emissions, and forecast short-term electricity demand. The
+project focuses on presenting energy-related information through an interactive dashboard so that users can
+understand consumption patterns and explore potential areas for improvement.
+The application uses a simulated dataset representing six urban districts over 120 consecutive days, with hourly
+electricity demand and weather-related observations. The dataset is generated locally when the application starts
+and is stored using an SQLite database. This approach makes the project reproducible and allows it to operate
+without requiring a live electricity-grid data feed.
+The backend is developed using Python and FastAPI, while the frontend uses HTML, CSS, and JavaScript.
+XGBoost is used for short-term demand forecasting. The model uses time-based information, weather variables,
+previous demand values, and rolling averages to identify patterns in electricity consumption and generate a 24-
+hour demand forecast.
+The application also estimates carbon emissions using electricity consumption, assumed generation-mix
+proportions, and illustrative emission factors. It provides historical charts, district -wise comparisons, forecast
+visualizations, configurable capacity-threshold alerts, and data export facilities. Model evaluation is supported
+through Mean Absolute Error (MAE), Root Mean Squared Error (RMSE), and the coefficient of determination
+(\(R^2\)), along with comparison against a simple persistence baseline.
+Overall, VoltAtlas demonstrates how data analysis, machine learning, emissions estimation, and web-based
+visualization can be combined in a single application for an urban energy analysis use case.
+
+6.2 Conclusion
+
+The VoltAtlas project demonstrates the practical application of data science and machine learning techniques to
+urban electricity analysis. By combining historical demand analysis, carbon emissions estimation, and short -
+
+                                                                         63
+term demand forecasting, the application provides an integrated view of energy-related information instead of
+treating each activity as a separate task.
+The interactive dashboard makes it easier to examine consumption trends, compare simulated districts,
+understand estimated emissions, and view expected demand for the next 24 hours. The use of XGBoost provides
+a machine-learning-based approach to forecasting, while the inclusion of MAE, RMSE, \(R^2\), and a
+persistence baseline establishes a framework for evaluating model performance.
+Another important outcome is the development of a reproducible system using commonly available
+technologies such as Python, FastAPI, SQLite, and JavaScript. The application can be started locally, and its
+API endpoints allow its analytical functions to be accessed and tested systematically.
+However, the results must be interpreted within the project's scope. The application uses synthetic data and
+illustrative emissions assumptions rather than verified live grid measurements. Therefore, it should be
+considered a prototype for energy analysis and forecasting, not a validated operational grid-monitoring system.
+The forecasting model's offline evaluation also does not, by itself, establish the accuracy of every value in its
+recursive 24-hour forecast.
+In conclusion, VoltAtlas fulfils its purpose as an academic prototype that demonstrates the integration of data
+processing, machine learning, emissions estimation, and interactive visualization. It also provides a foundation
+for further development using real-world electricity and weather data.
+
+6.3 Limitations
+
+Despite its useful features, the current implementation has certain limitations that should be considered when
+interpreting its outputs.
+1. Use of synthetic data: The application generates 120 days of hourly observations for six simulated urban
+districts. The patterns may not fully represent the behaviour of an actual electricity distribution network.
+2. Absence of live data integration: The current version does not directly collect readings from smart meters,
+electricity utilities, or live weather services. Consequently, the dashboard reflects the generated dataset rather
+than current grid conditions.
+3. Illustrative emissions factors: The emission factors used for coal, gas, solar, and wind are illustrative
+assumptions. They are not presented as verified, current Delhi NCR grid-emission values. The estimated
+emissions therefore depend on the assumptions configured in the application.
+4. Forecasting limitations: The model's evaluation uses a chronological training and testing split. The reported
+offline metrics are based on one-step-ahead predictions using observed lagged demand. The displayed 24-hour
+
+                                                                         64
+forecast is recursive, meaning that earlier predicted values are reused to generate later predictions. Its accuracy
+may differ from the offline test metrics.
+5. District-level forecast allocation: Forecasts for individual districts are derived using fixed proportional
+demand shares rather than separate forecasting models trained for every district. This may not capture district-
+specific consumption patterns.
+6. Weather assumptions: For the future 24-hour forecast, the application reuses the previous day's hourly weather
+pattern as a scenario assumption. This is not equivalent to using an actual weather forecast.
+7. Simplified alerts and health indicators: Capacity alerts identify demand exceeding a configured threshold;
+they do not calculate the probability of a blackout. Similarly, the district health score is a heuristic indicator
+based on selected factors and should not be interpreted as a certified assessment of grid safety.
+8. Prototype-level deployment: The current application is intended for local academic use. Further work would
+be required to establish production-grade authentication, security, data governance, reliability, and integration
+with operational infrastructure.
+These limitations provide clear directions for improving the application's reliability and extending its practical
+usefulness.
+
+6.4 Future Scope
+
+VoltAtlas can be extended in several ways to improve the accuracy, reliability, and practical applicability of the
+system.
+6.4.1 Integration with Real-Time Data
+A future version could integrate verified smart-meter readings, utility consumption records, and weather APIs.
+Automated data ingestion and validation would help the system analyse actual electricity consumption instead
+of relying on synthetic observations.
+6.4.2 Improved Demand Forecasting
+The forecasting module could be trained and tested using larger, verified datasets covering different seasons and
+demand conditions. Additional approaches, such as Random Forest, LightGBM, LSTM networks, and other
+time-series models, could be compared with XGBoost. Walk-forward evaluation and direct multi-step
+forecasting could also be explored to assess the accuracy of the complete 24-hour forecast more realistically.
+6.4.3 More Reliable Carbon Emissions Estimation
+
+                                                                         65
+Illustrative emission factors could be replaced with verified, regionally appropriate data. Incorporating time -
+varying generation-mix information would allow emissions estimates to reflect changes in the sources supplying
+electricity. The system could also display the assumptions and uncertainty associated with each estimate.
+6.4.4 District-Specific Forecasting
+Instead of allocating overall demand forecasts through fixed proportions, separate models could be trained for
+individual districts if sufficient district-level historical data becomes available. This could help capture local
+demand patterns, weather sensitivity, and differences in consumption behaviour.
+6.4.5 Advanced Alerts and Anomaly Detection
+Future development could include anomaly detection to identify unusual consumption patterns and improved
+alerting based on verified capacity information. With suitable operational data, the system could support more
+informative warnings and help users investigate possible causes of unusual demand.
+6.4.6 Enhanced Dashboard and Deployment
+The dashboard could be extended with user accounts, role-based access, automated report generation, scheduled
+updates, and secure cloud deployment. Additional maps and comparison tools could help users examine
+geographical differences in energy consumption and emissions.
+6.4.7 Support for Energy Efficiency Planning
+With reliable data, the application could help identify periods of high demand, compare energy-use patterns,
+and examine the potential effect of energy-efficiency measures. These insights could support preliminary
+planning by researchers, students, and energy analysts.
+The above improvements would move VoltAtlas from a reproducible academic prototype towards a more data-
+driven energy analysis platform. Their implementation would depend on the availability of reliable data, suitable
+validation procedures, and the requirements of the intended users.
+
+6.5 Contribution Towards Sustainable Development Goals (SDGs)
+
+VoltAtlas is aligned with selected United Nations Sustainable Development Goals through its focus on energy
+analysis, urban sustainability, and emissions awareness.
+SDG 7: Affordable and Clean Energy
+The project supports awareness of electricity consumption and estimated emissions associated with different
+energy sources. Its analytics and forecasting features demonstrate how data-driven tools can contribute to
+energy-efficiency planning and better understanding of demand patterns.
+SDG 11: Sustainable Cities and Communities
+
+                                                                         66
+By presenting simulated district-level consumption, forecasts, and energy indicators, VoltAtlas illustrates how
+digital tools can support the study of urban energy requirements. The approach could be extended to help urban
+planners and researchers examine energy-related challenges using verified local data.
+SDG 13: Climate Action
+The emissions estimation module connects electricity consumption with estimated carbon dioxide equivalent
+emissions. By making these estimates visible alongside demand patterns, the project encourages consideration
+of the environmental impact of energy use.
+The project's contribution to these goals is primarily demonstrative and educational. Since the present version
+uses synthetic data and illustrative emission factors, it does not establish measurable reductions in energy
+consumption or greenhouse gas emissions. Such outcomes would require deployment with reliable real-world
+data and evaluation of the effect of decisions informed by the system.
+
+                                                                         67
+                             CHAPTER 7 – REFERENCES
+
+[1] L. Semmelmann, S. Henni, and C. Weinhardt, “Load forecasting for energy communities: a novel LSTM -
+XGBoost hybrid model based on smart meter data,” Energy Informatics, vol. 5, suppl. 1, Art. no. 24, 2022.
+[Online]. Available: https://doi.org/10.1186/s42162-022-00212-9.
+[2] “Bagging–XGBoost algorithm based extreme weather identification and short-term load forecasting model,”
+Energy Reports, vol. 8, pp. 8661–8674, Nov. 2022. [Online]. Available:
+https://doi.org/10.1016/j.egyr.2022.06.072.
+[3] Y. Zhao, H. Leng, Q. Yuan, and Y. Zhao, “From energy dependence to spatial intelligence: A spatial data-
+based carbon emission estimation model for urban built-up area,” Sustainability, vol. 17, no. 22, Art. no. 10170,
+2025. [Online]. Available: https://doi.org/10.3390/su172210170.
+[4] XGBoost Developers, “XGBoost Documentation.” [Online]. Available: https://xgboost.readthedocs.io/
+[5] FastAPI, “FastAPI Documentation.” [Online]. Available: https://fastapi.tiangolo.com/
+[6] Python Software Foundation, “Python Documentation.” [Online]. Available: https://docs.python.org/3/
+[7] SQLite, “SQLite Documentation.” [Online]. Available: https://www.sqlite.org/docs.html
+[8] Scikit-learn Developers, “Scikit-learn: Machine Learning in Python.” [Online]. Available: https://scikit-
+learn.org/stable/
+[9] United Nations, “The 17 Sustainable Development Goals.” [Online]. Available: https://sdgs.un.org/goals
+
+                                                                         68
+APPENDIX A: IMPORTANT PROJECT FILES
+
+The VoltAtlas project is organised into separate modules for data processing, backend services, forecasting, and
+user interface development. The important files used in the implementation are listed below.
+
+FILE                       PURPOSE
+backend/engine.py          Generates synthetic energy data, performs data processing, prepares forecasting
+                           features, and supports model training and evaluation.
+backend/main.py            Implements FastAPI endpoints, data aggregation, emissions calculations, alerts,
+                           and configuration settings.
+frontend/index.html        Defines the main structure of the web application and dashboard navigation.
+frontend/assets/app.js     Handles dashboard interactions, API requests, and dynamic visualizations.
+frontend/assets/style.css  Defines the layout, appearance, and responsive styling of the dashboard.
+tests/test_project.py      Contains automated project tests.
+start.py                   Starts the application using Uvicorn.
+
+                           69
+              APPENDIX B: API ENDPOINTS AND EXECUTION
+
+VoltAtlas provides REST API endpoints through FastAPI to retrieve energy data, access forecasts, manage
+settings, and export information. The available API documentation can be accessed locally after starting the
+application.
+Important endpoints:
+
+    • GET /api/health – Checks application health.
+    • GET /api/overview – Retrieves overview information.
+    • GET /api/timeseries – Retrieves historical energy data.
+    • GET /api/zones – Retrieves district-level information.
+    • GET /api/forecast – Retrieves the electricity demand forecast.
+    • GET /api/alerts – Retrieves generated alerts.
+    • GET /api/insights – Retrieves analytical insights.
+    • GET /api/export – Exports supported data in CSV format.
+    • POST /api/retrain – Initiates model retraining.
+Application execution:
+The application can be started from the project directory using:
+python start.py
+After the server starts, the dashboard is accessible at http://localhost:8000. The interactive API documentation
+is available at http://localhost:8000/docs.
+Automated tests can be executed using:
+python -m pytest -q
+These commands provide a convenient way to launch the application and check its implemented functionality
+in the local development environment.
+
+                                                                         70
+

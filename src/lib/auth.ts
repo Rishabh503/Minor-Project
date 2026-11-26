@@ -2,10 +2,12 @@ import { currentUser, auth } from "@clerk/nextjs/server";
 import { db } from "./db";
 import { CompanyRole, GlobalRole } from "@prisma/client";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 export interface AuthenticatedUserContext {
   dbUser: NonNullable<Awaited<ReturnType<typeof getOrCreateDbUser>>>;
   clerkId: string;
+  isTestSession?: boolean;
 }
 
 export interface CompanyAuthContext extends AuthenticatedUserContext {
@@ -22,12 +24,41 @@ export interface CompanyAuthContext extends AuthenticatedUserContext {
     createdAt?: Date;
   };
   isPlatformAdmin: boolean;
+  isTestSession?: boolean;
 }
 
 /**
- * Retrieves the current Clerk user and syncs with our local database.
+ * Retrieves the current user (either via Test Session cookie or Clerk user) and syncs with our local database.
  */
 export async function getOrCreateDbUser() {
+  // 1. Check for active test session cookie first (for testing/demo purposes)
+  try {
+    const cookieStore = await cookies();
+    const testUserId = cookieStore.get("ascent_test_user")?.value;
+    if (testUserId) {
+      const testUser = await db.user.findFirst({
+        where: {
+          OR: [
+            { id: testUserId },
+            { email: testUserId },
+            { clerkId: testUserId },
+          ],
+        },
+        include: {
+          memberships: {
+            include: {
+              company: true,
+              employeeProfile: true,
+            },
+          },
+        },
+      });
+      if (testUser) return testUser;
+    }
+  } catch {
+    // cookies() unavailable in non-request contexts; proceed to Clerk
+  }
+
   const clerkUser = await currentUser();
   if (!clerkUser) return null;
 
@@ -112,6 +143,20 @@ export async function getOrCreateDbUser() {
  * Asserts the user is authenticated. Redirects to /sign-in if not.
  */
 export async function requireAuth() {
+  // Check for test session cookie first
+  try {
+    const cookieStore = await cookies();
+    const testUserId = cookieStore.get("ascent_test_user")?.value;
+    if (testUserId) {
+      const dbUser = await getOrCreateDbUser();
+      if (dbUser) {
+        return { dbUser, clerkId: dbUser.clerkId, isTestSession: true };
+      }
+    }
+  } catch {
+    // Proceed to Clerk auth
+  }
+
   const { userId } = await auth();
   if (!userId) {
     redirect("/sign-in");
@@ -122,7 +167,7 @@ export async function requireAuth() {
     redirect("/sign-in");
   }
 
-  return { dbUser, clerkId: userId };
+  return { dbUser, clerkId: userId, isTestSession: false };
 }
 
 /**
@@ -130,7 +175,7 @@ export async function requireAuth() {
  * If user has no company membership, redirects to /onboarding.
  */
 export async function requireActiveCompanyContext(requestedCompanyId?: string) {
-  const { dbUser, clerkId } = await requireAuth();
+  const { dbUser, clerkId, isTestSession } = await requireAuth();
 
   const isPlatformAdmin = dbUser.globalRole === GlobalRole.PLATFORM_ADMIN;
 
@@ -151,6 +196,7 @@ export async function requireActiveCompanyContext(requestedCompanyId?: string) {
         company: null,
         membership: null,
         isPlatformAdmin: true,
+        isTestSession,
       };
     }
 
@@ -179,6 +225,7 @@ export async function requireActiveCompanyContext(requestedCompanyId?: string) {
       createdAt: activeMembership.createdAt,
     },
     isPlatformAdmin,
+    isTestSession,
   };
 }
 

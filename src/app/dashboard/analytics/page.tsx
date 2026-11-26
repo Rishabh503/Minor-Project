@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { CompanyRole } from "@prisma/client";
 import { calculateCompanyAnalytics } from "@/lib/analytics";
 import { AnalyticsDashboardView } from "@/components/analytics/AnalyticsDashboardView";
+import { DoubtInsights } from "./DoubtInsights";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { Shield, Building, Users, CheckCircle, FileText } from "lucide-react";
@@ -189,16 +190,19 @@ export default async function AnalyticsPage({ searchParams }: AnalyticsPageProps
   const summary = await calculateCompanyAnalytics(companyId, analyticsOptions);
 
   return (
-    <AnalyticsDashboardView
-      summary={summary}
-      departments={departments}
-      batches={batches}
-      currentMembershipId={currentMembershipId}
-      userRole={role}
-      scopeTitle={scopeTitle}
-      scopeSubtitle={scopeSubtitle}
-      selectedDepartmentId={resolvedSearchParams.departmentId || "ALL"}
-      selectedBatchId={resolvedSearchParams.batchId || "ALL"}
-    />
+    <div className="space-y-6">
+      {role !== CompanyRole.EMPLOYEE && <DoubtInsights />}
+      <AnalyticsDashboardView
+        summary={summary}
+        departments={departments}
+        batches={batches}
+        currentMembershipId={currentMembershipId}
+        userRole={role}
+        scopeTitle={scopeTitle}
+        scopeSubtitle={scopeSubtitle}
+        selectedDepartmentId={resolvedSearchParams.departmentId || "ALL"}
+        selectedBatchId={resolvedSearchParams.batchId || "ALL"}
+      />
+    </div>
   );
 }

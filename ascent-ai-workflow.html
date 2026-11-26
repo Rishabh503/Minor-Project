@@ -1,0 +1,86 @@
+<div id="ascent-ai-flow">
+  <style>
+    #ascent-ai-flow { color: var(--foreground); font-family: inherit; }
+    #ascent-ai-flow * { box-sizing: border-box; }
+    #ascent-ai-flow h1, #ascent-ai-flow h2, #ascent-ai-flow h3, #ascent-ai-flow p { margin: 0; }
+    #ascent-ai-flow h1, #ascent-ai-flow h2, #ascent-ai-flow h3 { font-weight: 500; }
+    #ascent-ai-flow .intro { color: var(--muted-foreground); margin-top: calc(var(--font-size-base) * .35); }
+    #ascent-ai-flow .main-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(var(--font-size-base) * 1.1); margin-top: calc(var(--font-size-base) * 1.15); }
+    #ascent-ai-flow .flow-list { list-style: none; padding: 0; margin: calc(var(--font-size-base) * .8) 0 0; }
+    #ascent-ai-flow .flow-list li { display: grid; grid-template-columns: 1.8em minmax(0, 1fr); align-items: start; gap: .55em; }
+    #ascent-ai-flow .flow-list li + li { margin-top: .4em; }
+    #ascent-ai-flow .step-no { color: var(--viz-series-1); font-variant-numeric: tabular-nums; }
+    #ascent-ai-flow .down { color: var(--muted-foreground); text-align: center; margin: .12em 0; }
+    #ascent-ai-flow .branch-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: calc(var(--font-size-base) * 1.1); margin-top: calc(var(--font-size-base) * 1.2); }
+    #ascent-ai-flow .branch { border-top: 1px solid var(--border); padding-top: calc(var(--font-size-base) * .8); }
+    #ascent-ai-flow .branch p { color: var(--muted-foreground); margin-top: .3em; }
+    #ascent-ai-flow .architecture { margin-top: calc(var(--font-size-base) * 1.2); }
+    #ascent-ai-flow .arch-row { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: .5em; margin-top: .65em; text-align: center; }
+    #ascent-ai-flow .arch-node { padding: .35em .65em; background: color-mix(in srgb, var(--viz-series-1) 12%, transparent); border-radius: .45em; }
+    #ascent-ai-flow .arch-arrow { color: var(--muted-foreground); }
+    #ascent-ai-flow .note { margin-top: calc(var(--font-size-base) * .8); color: var(--muted-foreground); }
+    @media (max-width: 600px) {
+      #ascent-ai-flow .main-grid, #ascent-ai-flow .branch-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+  <h1>Ascent AI workflows</h1>
+  <p class="intro">Company material flows into a private knowledge base; employees and managers use it through role-scoped AI tools.</p>
+
+  <div class="main-grid">
+    <section class="card" aria-labelledby="ascent-manager-flow">
+      <h2 id="ascent-manager-flow">Manager adds company material</h2>
+      <ol class="flow-list">
+        <li><span class="step-no">01</span><span>Sign in as a company admin or manager.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">02</span><span>Open <strong>Knowledge Base</strong>.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">03</span><span>Enter a title and paste policy, FAQ, or onboarding text.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">04</span><span>Server checks role, company, title, and text length.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">05</span><span>Text is split into chunks; Gemini creates embeddings.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">06</span><span>Chunks and embeddings are stored under that company in PostgreSQL.</span></li>
+      </ol>
+      <p class="note">Text paste is supported; PDF and Word upload are not implemented.</p>
+    </section>
+
+    <section class="card" aria-labelledby="ascent-employee-flow">
+      <h2 id="ascent-employee-flow">Employee asks a question</h2>
+      <ol class="flow-list">
+        <li><span class="step-no">01</span><span>Sign in and open <strong>AI Onboarding Help</strong>.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">02</span><span>Ask a question about company onboarding.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">03</span><span>Gemini embeds the question; the server searches only this company’s chunks.</span></li>
+        <li class="down" aria-hidden="true">&#8595;</li>
+        <li><span class="step-no">04</span><span>Cosine similarity selects the four closest chunks.</span></li>
+        <li class="down" aria-hidden="true">↓</li>
+        <li><span class="step-no">05</span><span>Gemini drafts an answer from retrieved material and returns source titles.</span></li>
+        <li class="down" aria-hidden="true">↓</li>
+        <li><span class="step-no">06</span><span>If material does not answer it, the assistant directs the employee to their manager.</span></li>
+      </ol>
+    </section>
+  </div>
+
+  <div class="branch-grid" aria-label="Additional manager AI workflows">
+    <section class="branch">
+      <h3>Written-answer grading suggestions</h3>
+      <p>Assessment submission → suggest grades → manager reviews and edits → manager saves or releases. AI suggestions are never released automatically.</p>
+    </section>
+    <section class="branch">
+      <h3>Forum doubt insights</h3>
+      <p>Analytics → analyze questions → Gemini groups recurring themes. Managers see direct-report questions; company admins see company-scoped questions.</p>
+    </section>
+  </div>
+
+  <section class="architecture" aria-labelledby="ascent-architecture">
+    <h2 id="ascent-architecture">Architecture</h2>
+    <div class="arch-row" aria-label="Browser to server to data and AI providers">
+      <span class="arch-node">Browser UI</span><span class="arch-arrow" aria-hidden="true">&#8594;</span>
+      <span class="arch-node">Next.js auth, role checks, server actions</span><span class="arch-arrow" aria-hidden="true">&#8594;</span>
+      <span class="arch-node">Prisma / PostgreSQL</span><span class="arch-arrow" aria-hidden="true">+</span>
+      <span class="arch-node">Gemini embeddings and generation</span>
+    </div>
+  </section>
+</div>

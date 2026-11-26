@@ -114,15 +114,15 @@ model User {
 }
 
 model Company {
-  id              String              @id @default(cuid())
-  name            String
-  slug            String              @unique
-  domain          String?
-  logoUrl         String?
-  status          CompanyStatus       @default(ACTIVE)
-  memberships     CompanyMembership[]
-  departments     Department[]
-  trainingBatches TrainingBatch[]
+  id                    String                     @id @default(cuid())
+  name                  String
+  slug                  String                     @unique
+  domain                String?
+  logoUrl               String?
+  status                CompanyStatus              @default(ACTIVE)
+  memberships           CompanyMembership[]
+  departments           Department[]
+  trainingBatches       TrainingBatch[]
   tasks                 Task[]
   meetings              Meeting[]
   employeeDoubts        EmployeeDoubt[]
@@ -130,38 +130,40 @@ model Company {
   assessmentAssignments AssessmentAssignment[]
   forumThreads          ForumThread[]
   auditLogs             AuditLog[]
-  createdAt             DateTime            @default(now())
-  updatedAt             DateTime            @updatedAt
+  knowledgeDocuments    CompanyKnowledgeDocument[]
+  createdAt             DateTime                   @default(now())
+  updatedAt             DateTime                   @updatedAt
 
   @@index([slug])
 }
 
 model CompanyMembership {
-  id                    String               @id @default(cuid())
-  userId                String
-  user                  User                 @relation(fields: [userId], references: [id], onDelete: Cascade)
-  companyId             String
-  company               Company              @relation(fields: [companyId], references: [id], onDelete: Cascade)
-  role                  CompanyRole          @default(EMPLOYEE)
-  status                MembershipStatus     @default(ACTIVE)
-  employeeProfile       EmployeeProfile?
-  managedProfiles       EmployeeProfile[]    @relation("ManagerReports")
-  createdTasks          Task[]               @relation("CreatedTasks")
-  assignedTasks         TaskAssignment[]     @relation("AssignedTasks")
-  taskAssignmentsMade   TaskAssignment[]     @relation("TaskAssignmentsMade")
-  reviewsGiven          TaskReview[]         @relation("ReviewsGiven")
-  organizedMeetings     Meeting[]            @relation("OrganizedMeetings")
-  meetingParticipations MeetingParticipant[] @relation("MeetingParticipations")
-  submittedDoubts       EmployeeDoubt[]      @relation("SubmittedDoubts")
-  createdWorksheets     Worksheet[]          @relation("CreatedWorksheets")
-  assignedWorksheets    AssessmentAssignment[] @relation("AssignedWorksheets")
-  worksheetAssignmentsMade AssessmentAssignment[] @relation("WorksheetAssignmentsMade")
-  evaluationsGiven      AssessmentEvaluation[] @relation("EvaluationsGiven")
-  authoredForumThreads  ForumThread[]        @relation("ForumThreadAuthor")
-  resolvedForumThreads  ForumThread[]        @relation("ForumThreadResolvedBy")
-  forumReplies          ForumReply[]         @relation("ForumReplyAuthor")
-  createdAt             DateTime             @default(now())
-  updatedAt             DateTime             @updatedAt
+  id                       String                     @id @default(cuid())
+  userId                   String
+  user                     User                       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId                String
+  company                  Company                    @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  role                     CompanyRole                @default(EMPLOYEE)
+  status                   MembershipStatus           @default(ACTIVE)
+  employeeProfile          EmployeeProfile?
+  managedProfiles          EmployeeProfile[]          @relation("ManagerReports")
+  createdTasks             Task[]                     @relation("CreatedTasks")
+  assignedTasks            TaskAssignment[]           @relation("AssignedTasks")
+  taskAssignmentsMade      TaskAssignment[]           @relation("TaskAssignmentsMade")
+  reviewsGiven             TaskReview[]               @relation("ReviewsGiven")
+  organizedMeetings        Meeting[]                  @relation("OrganizedMeetings")
+  meetingParticipations    MeetingParticipant[]       @relation("MeetingParticipations")
+  submittedDoubts          EmployeeDoubt[]            @relation("SubmittedDoubts")
+  createdWorksheets        Worksheet[]                @relation("CreatedWorksheets")
+  assignedWorksheets       AssessmentAssignment[]     @relation("AssignedWorksheets")
+  worksheetAssignmentsMade AssessmentAssignment[]     @relation("WorksheetAssignmentsMade")
+  evaluationsGiven         AssessmentEvaluation[]     @relation("EvaluationsGiven")
+  authoredForumThreads     ForumThread[]              @relation("ForumThreadAuthor")
+  resolvedForumThreads     ForumThread[]              @relation("ForumThreadResolvedBy")
+  forumReplies             ForumReply[]               @relation("ForumReplyAuthor")
+  knowledgeDocuments       CompanyKnowledgeDocument[] @relation("KnowledgeDocumentCreator")
+  createdAt                DateTime                   @default(now())
+  updatedAt                DateTime                   @updatedAt
 
   @@unique([userId, companyId])
   @@index([userId])
@@ -227,28 +229,43 @@ model TrainingBatch {
   @@index([companyId])
 }
 
-model Task {
-  id                  String           @id @default(cuid())
+model CompanyKnowledgeDocument {
+  id                  String            @id @default(cuid())
   companyId           String
-  company             Company          @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  company             Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  creatorMembershipId String
+  creator             CompanyMembership @relation("KnowledgeDocumentCreator", fields: [creatorMembershipId], references: [id], onDelete: Cascade)
+  title               String
+  content             String            @db.Text
+  embedding           Json?
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+
+  @@index([companyId])
+}
+
+model Task {
+  id                  String             @id @default(cuid())
+  companyId           String
+  company             Company            @relation(fields: [companyId], references: [id], onDelete: Cascade)
   creatorMembershipId String?
   creator             CompanyMembership? @relation("CreatedTasks", fields: [creatorMembershipId], references: [id], onDelete: SetNull)
   title               String
   description         String?
   instructions        String?
-  type                TaskType         @default(TRAINING_ACTIVITY)
-  priority            TaskPriority     @default(MEDIUM)
+  type                TaskType           @default(TRAINING_ACTIVITY)
+  priority            TaskPriority       @default(MEDIUM)
   startDate           DateTime?
   dueDate             DateTime?
   resourceLinks       Json?
   attachments         Json?
-  isArchived          Boolean          @default(false)
-  isTemplate          Boolean          @default(false)
-  isHistorical        Boolean          @default(false)
+  isArchived          Boolean            @default(false)
+  isTemplate          Boolean            @default(false)
+  isHistorical        Boolean            @default(false)
   assignments         TaskAssignment[]
   forumThreads        ForumThread[]
-  createdAt           DateTime         @default(now())
-  updatedAt           DateTime         @updatedAt
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime           @updatedAt
 
   @@index([companyId])
   @@index([type])
@@ -257,20 +274,20 @@ model Task {
 }
 
 model TaskAssignment {
-  id                     String           @id @default(cuid())
+  id                     String             @id @default(cuid())
   taskId                 String
-  task                   Task             @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  task                   Task               @relation(fields: [taskId], references: [id], onDelete: Cascade)
   employeeMembershipId   String
-  employeeMembership     CompanyMembership @relation("AssignedTasks", fields: [employeeMembershipId], references: [id], onDelete: Cascade)
+  employeeMembership     CompanyMembership  @relation("AssignedTasks", fields: [employeeMembershipId], references: [id], onDelete: Cascade)
   assignedByMembershipId String?
   assignedBy             CompanyMembership? @relation("TaskAssignmentsMade", fields: [assignedByMembershipId], references: [id], onDelete: SetNull)
-  status                 AssignmentStatus @default(NOT_STARTED)
+  status                 AssignmentStatus   @default(NOT_STARTED)
   dueDate                DateTime?
   completedAt            DateTime?
   submissions            TaskSubmission[]
   reviews                TaskReview[]
-  createdAt              DateTime         @default(now())
-  updatedAt              DateTime         @updatedAt
+  createdAt              DateTime           @default(now())
+  updatedAt              DateTime           @updatedAt
 
   @@unique([taskId, employeeMembershipId])
   @@index([employeeMembershipId])
@@ -293,16 +310,16 @@ model TaskSubmission {
 }
 
 model TaskReview {
-  id                   String          @id @default(cuid())
+  id                   String            @id @default(cuid())
   assignmentId         String
-  assignment           TaskAssignment  @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  assignment           TaskAssignment    @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
   submissionId         String?
-  submission           TaskSubmission? @relation(fields: [submissionId], references: [id], onDelete: SetNull)
+  submission           TaskSubmission?   @relation(fields: [submissionId], references: [id], onDelete: SetNull)
   reviewerMembershipId String
   reviewer             CompanyMembership @relation("ReviewsGiven", fields: [reviewerMembershipId], references: [id], onDelete: Cascade)
   decision             ReviewDecision
   feedback             String
-  reviewedAt           DateTime        @default(now())
+  reviewedAt           DateTime          @default(now())
 
   @@index([assignmentId])
   @@index([reviewerMembershipId])
@@ -453,11 +470,11 @@ model Question {
   worksheet     Worksheet          @relation(fields: [worksheetId], references: [id], onDelete: Cascade)
   type          QuestionType
   questionText  String
-  options       Json?              // For MCQ: ["Option A", "Option B", ...]
-  correctOption String?            // For MCQ auto-grading. NEVER exposed to employees before release!
+  options       Json? // For MCQ: ["Option A", "Option B", ...]
+  correctOption String? // For MCQ auto-grading. NEVER exposed to employees before release!
   maxMarks      Float              @default(5)
   order         Int                @default(0)
-  rubric        String?            // Evaluation criteria description
+  rubric        String? // Evaluation criteria description
   answers       AssessmentAnswer[]
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
@@ -577,7 +594,7 @@ model ForumThread {
   content                String
   category               ForumCategory      @default(GENERAL)
   status                 ForumThreadStatus  @default(OPEN)
-  attachments            Json?              // Array of { name: string, url: string }
+  attachments            Json? // Array of { name: string, url: string }
   taskId                 String?
   task                   Task?              @relation(fields: [taskId], references: [id], onDelete: SetNull)
   worksheetId            String?
@@ -605,23 +622,21 @@ model ForumThread {
 }
 
 model ForumReply {
-  id                 String             @id @default(cuid())
+  id                 String            @id @default(cuid())
   threadId           String
-  thread             ForumThread        @relation("ThreadReplies", fields: [threadId], references: [id], onDelete: Cascade)
+  thread             ForumThread       @relation("ThreadReplies", fields: [threadId], references: [id], onDelete: Cascade)
   authorMembershipId String
-  author             CompanyMembership  @relation("ForumReplyAuthor", fields: [authorMembershipId], references: [id], onDelete: Cascade)
+  author             CompanyMembership @relation("ForumReplyAuthor", fields: [authorMembershipId], references: [id], onDelete: Cascade)
   content            String
   attachments        Json?
-  isAcceptedAnswer   Boolean            @default(false)
-  isReported         Boolean            @default(false)
+  isAcceptedAnswer   Boolean           @default(false)
+  isReported         Boolean           @default(false)
   reportReason       String?
-  isModerated        Boolean            @default(false)
-  acceptedForThread  ForumThread?       @relation("AcceptedAnswer")
-  createdAt          DateTime           @default(now())
-  updatedAt          DateTime           @updatedAt
+  isModerated        Boolean           @default(false)
+  acceptedForThread  ForumThread?      @relation("AcceptedAnswer")
+  createdAt          DateTime          @default(now())
+  updatedAt          DateTime          @updatedAt
 
   @@index([threadId])
   @@index([authorMembershipId])
 }
-
-

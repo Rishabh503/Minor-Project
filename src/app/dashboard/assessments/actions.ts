@@ -13,6 +13,7 @@ import {
 } from "@/lib/validations/assessment";
 import { logAuditEvent } from "@/lib/audit";
 import { sendEmail } from "@/lib/email";
+import { generateJson } from "@/lib/ai/gemini";
 import {
   CompanyRole,
   QuestionType,
@@ -607,6 +608,58 @@ export async function evaluateAssessmentAction(formData: FormData) {
   } catch (error) {
     console.error("Error evaluating assessment:", error);
     return { error: "Failed to evaluate assessment submission" };
+  }
+}
+
+export async function suggestAssessmentGradesAction(submissionId: string) {
+  const context = await enforceRole([CompanyRole.MANAGER, CompanyRole.COMPANY_ADMIN]);
+  const submission = await db.assessmentSubmission.findUnique({
+    where: { id: submissionId },
+    include: {
+      assignment: {
+        include: {
+          worksheet: { include: { questions: true } },
+          employee: { include: { employeeProfile: { select: { managerMembershipId: true } } } },
+        },
+      },
+      answers: true,
+    },
+  });
+  if (!submission || submission.assignment.companyId !== context.company!.id) {
+    return { error: "Submission not found or unauthorized." };
+  }
+  if (
+    context.membership!.role === CompanyRole.MANAGER &&
+    submission.assignment.employee.employeeProfile?.managerMembershipId !== context.membership!.id
+  ) {
+    return { error: "You can only request grading suggestions for your direct reports." };
+  }
+
+  const openResponses = submission.assignment.worksheet.questions
+    .filter((question) => question.type === QuestionType.SHORT_ANSWER || question.type === QuestionType.LONG_ANSWER)
+    .map((question) => ({
+      questionId: question.id,
+      question: question.questionText,
+      rubric: question.rubric || "No rubric provided; assess relevance, correctness, and clarity.",
+      maxMarks: question.maxMarks,
+      answer: submission.answers.find((item) => item.questionId === question.id)?.textAnswer || "",
+    }));
+  if (!openResponses.length) return { error: "This submission has no written answers suitable for AI suggestions." };
+
+  try {
+    const suggestion = await generateJson<{
+      grades: Array<{ questionId: string; marksAwarded: number; feedback: string }>;
+      overallFeedback: string;
+    }>(`You assist a human evaluator. Provide provisional grading suggestions for the written answers below. Never claim certainty. Apply each rubric and do not award more than maxMarks. Return JSON with grades[{questionId,marksAwarded,feedback}] and overallFeedback.\n\n${JSON.stringify(openResponses)}`);
+    const allowed = new Map(openResponses.map((item) => [item.questionId, item.maxMarks]));
+    const grades = suggestion.grades.filter((grade) => allowed.has(grade.questionId)).map((grade) => ({
+      questionId: grade.questionId,
+      marksAwarded: Math.max(0, Math.min(Number(grade.marksAwarded) || 0, allowed.get(grade.questionId)!)),
+      feedback: String(grade.feedback || "").slice(0, 1000),
+    }));
+    return { grades, overallFeedback: String(suggestion.overallFeedback || "").slice(0, 3000) };
+  } catch (error) {
+    return { error: error instanceof Error ? error.message : "Could not generate grading suggestions." };
   }
 }
 

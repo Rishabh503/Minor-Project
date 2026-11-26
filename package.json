@@ -11,6 +11,7 @@
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
     "prisma:seed": "npx tsx prisma/seed.ts",
+    "prisma:seed-demo-knowledge": "tsx prisma/seed-demo-knowledge.ts",
     "test": "tsx --test tests/**/*.test.ts"
   },
   "prisma": {

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { auth } from "@clerk/nextjs/server";
+import { cookies } from "next/headers";
 import { Button } from "@/components/ui/Button";
 import { Badge } from "@/components/ui/Badge";
 import {
@@ -13,7 +14,18 @@ import {
 } from "lucide-react";
 
 export default async function HomePage() {
-  const { userId } = await auth();
+  const cookieStore = await cookies();
+  const testUserId = cookieStore.get("ascent_test_user")?.value;
+  let isAuthenticated = !!testUserId;
+
+  if (!isAuthenticated) {
+    try {
+      const { userId } = await auth();
+      isAuthenticated = !!userId;
+    } catch {
+      // Ignored
+    }
+  }
 
   return (
     <div className="min-h-screen bg-canvas flex flex-col justify-between">
@@ -21,14 +33,14 @@ export default async function HomePage() {
       <header className="border-b border-surface-border bg-surface px-6 py-4">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3 font-heading text-xl font-bold tracking-tight text-editorial-900">
-            <span className="flex h-8 w-8 items-center justify-center rounded bg-editorial-800 text-sm font-bold text-white">
+            <span className="flex h-8 w-8 items-center justify-center rounded bg-editorial-800 text-sm font-bold text-white shadow-sm">
               A
             </span>
             <span>Ascent Onboarding</span>
           </div>
 
-          <div className="flex items-center gap-4">
-            {userId ? (
+          <div className="flex items-center gap-3">
+            {isAuthenticated ? (
               <Link href="/dashboard">
                 <Button variant="primary" size="sm" className="gap-2">
                   Go to Dashboard
@@ -59,7 +71,7 @@ export default async function HomePage() {
         <div className="text-center max-w-3xl mx-auto space-y-6">
           <div className="inline-flex items-center gap-2 rounded-full bg-editorial-100 px-3.5 py-1 text-xs font-semibold text-editorial-800">
             <Sparkles className="w-3.5 h-3.5 text-coral-500" />
-            <span>Phase 1 Foundation • Production-Minded Architecture</span>
+            <span>Academic Minor Project • Multi-Role Testing Suite Active</span>
           </div>
 
           <h1 className="font-heading text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-editorial-900 leading-tight">
@@ -71,18 +83,19 @@ export default async function HomePage() {
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-4 pt-4">
-            <Link href={userId ? "/dashboard" : "/sign-up"}>
+            <Link href={isAuthenticated ? "/dashboard" : "/sign-up"}>
               <Button variant="primary" size="lg" className="gap-2.5">
-                {userId ? "Access Workplace Dashboard" : "Register Organization"}
+                {isAuthenticated ? "Access Workplace Dashboard" : "Register Organization"}
                 <ArrowRight className="w-4 h-4" />
               </Button>
             </Link>
             <Link href="/sign-in">
               <Button variant="outline" size="lg">
-                Sign In to Existing Tenant
+                Clerk Sign In
               </Button>
             </Link>
           </div>
+
         </div>
 
         {/* Feature Grid */}

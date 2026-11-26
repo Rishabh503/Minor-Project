@@ -116,6 +116,12 @@ Built with Next.js App Router, React 19, TypeScript, PostgreSQL (Neon), and Pris
 
 ---
 
+## AI Assistance
+
+AI features use the Gemini API. Configure `GEMINI_API_KEY` in `.env` (optionally set `GEMINI_MODEL` and `GEMINI_EMBEDDING_MODEL`). Company admins can paste policy, FAQ, or onboarding text into **Company → Knowledge Base**; the server chunks the content, stores Gemini embeddings per company, and retrieves relevant chunks for the employee onboarding assistant. Managers can request written-answer grading suggestions and forum doubt summaries. These are advisory: managers review and save grades themselves.
+
+The knowledge-base table is included in the Prisma schema. After pulling this change, run `npx prisma db push` against your development database before using the AI knowledge-base pages.
+
 ## 📊 Performance Score Formula
 
 Ascent uses a transparent, mathematically rigorous formula to evaluate employee performance without arbitrarily mixing disparate metrics:
@@ -277,6 +283,11 @@ DIRECT_URL="postgresql://[user]:[password]@[neon_hostname]/neondb?sslmode=requir
 # Application Settings
 NEXT_PUBLIC_APP_NAME="Ascent Onboarding"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
+
+# Gemini AI features
+GEMINI_API_KEY="your-gemini-api-key"
+GEMINI_MODEL="gemini-2.5-flash"
+GEMINI_EMBEDDING_MODEL="gemini-embedding-001"
 
 # Email Configuration (Optional - for Invitations)
 RESEND_API_KEY="re_..."

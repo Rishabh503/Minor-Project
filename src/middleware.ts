@@ -5,9 +5,17 @@ const isPublicRoute = createRouteMatcher([
   "/sign-in(.*)",
   "/sign-up(.*)",
   "/api/webhooks(.*)",
+  "/test-login(.*)",
+  "/api/test-auth(.*)",
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
+  // Allow requests with an active test user session
+  const testUserCookie = req.cookies.get("ascent_test_user")?.value;
+  if (testUserCookie) {
+    return;
+  }
+
   if (!isPublicRoute(req)) {
     await auth.protect();
   }

@@ -20,6 +20,7 @@ import {
   CheckSquare,
   MessageSquare,
   TrendingUp,
+  FileText,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -46,7 +47,9 @@ export function Sidebar({ role, isPlatformAdmin }: SidebarProps) {
           { href: "/dashboard/analytics", label: "Analytics & Rankings", icon: TrendingUp },
           { href: "/dashboard/schedule", label: "Schedule & Meetings", icon: Calendar },
           { href: "/dashboard/assessments", label: "Worksheets & Tests", icon: CheckSquare },
+          { href: "/dashboard/company/knowledge", label: "Knowledge Base", icon: FileText },
           { href: "/dashboard/forum", label: "Forum & Doubts", icon: MessageSquare },
+          { href: "/dashboard/assistant", label: "AI Onboarding Help", icon: Sparkles },
           { href: "/dashboard/company/members", label: "Team & Invites", icon: Users },
           { href: "/dashboard/tasks", label: "Tasks & Training", icon: Layers },
           { href: "/dashboard/company/departments", label: "Departments", icon: FolderTree },
@@ -59,7 +62,9 @@ export function Sidebar({ role, isPlatformAdmin }: SidebarProps) {
           { href: "/dashboard/analytics", label: "Analytics & Rankings", icon: TrendingUp },
           { href: "/dashboard/schedule", label: "Schedule & Meetings", icon: Calendar },
           { href: "/dashboard/assessments", label: "Worksheets & Tests", icon: CheckSquare },
+          { href: "/dashboard/company/knowledge", label: "Knowledge Base", icon: FileText },
           { href: "/dashboard/forum", label: "Forum & Doubts", icon: MessageSquare },
+          { href: "/dashboard/assistant", label: "AI Onboarding Help", icon: Sparkles },
           { href: "/dashboard/tasks", label: "Tasks & Training", icon: Layers },
           { href: "/dashboard/manager/team", label: "My Direct Reports", icon: UserCheck },
           { href: "/dashboard/manager/reviews", label: "Task Reviews", icon: ClipboardList },
@@ -73,6 +78,7 @@ export function Sidebar({ role, isPlatformAdmin }: SidebarProps) {
           { href: "/dashboard/schedule", label: "Schedule & Meetings", icon: Calendar },
           { href: "/dashboard/assessments", label: "Worksheets & Tests", icon: CheckSquare },
           { href: "/dashboard/forum", label: "Forum & Doubts", icon: MessageSquare },
+          { href: "/dashboard/assistant", label: "AI Onboarding Help", icon: Sparkles },
           { href: "/dashboard/employee/tasks", label: "Onboarding Checklist", icon: FileCheck2 },
           { href: "/dashboard/employee/training", label: "Training Modules", icon: GraduationCap },
           { href: "/dashboard/employee/profile", label: "My Profile", icon: Users },
